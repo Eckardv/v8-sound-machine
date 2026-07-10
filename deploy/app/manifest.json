@@ -1,0 +1,14 @@
+{
+  "name": "V8 Sound Machine — Office",
+  "short_name": "V8 Office",
+  "description": "Booking pipeline, events and payments for V8 Sound Machine",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#0a0a0a",
+  "theme_color": "#0a0a0a",
+  "orientation": "portrait",
+  "icons": [
+    { "src": "logo.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "logo.png", "sizes": "192x192", "type": "image/png", "purpose": "any" }
+  ]
+}

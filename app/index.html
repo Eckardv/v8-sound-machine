@@ -1,0 +1,1379 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>V8 Office</title>
+<meta name="theme-color" content="#0a0a0a">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="logo.png">
+<link rel="apple-touch-icon" href="logo.png">
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --black:#0a0a0a;--dark:#131313;--card:#1a1a1a;--card2:#222;
+  --pink:#ff2da4;--pink-dark:#b3126f;--purple:#8b3dff;--blue:#27a6ff;
+  --grad:linear-gradient(120deg,#ff2da4,#8b3dff 55%,#27a6ff);
+  --text:#eaeaea;--muted:#9a9a9a;--line:#2a2a2a;--green:#2ecc71;--amber:#ffb400;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:var(--black);color:var(--text);font-family:'Inter',system-ui,sans-serif;line-height:1.5;padding-bottom:calc(70px + env(safe-area-inset-bottom))}
+h1,h2,h3{font-family:'Oswald',sans-serif;text-transform:uppercase;letter-spacing:.04em}
+button{font-family:inherit;cursor:pointer}
+a{color:inherit;text-decoration:none}
+
+/* Header */
+.top{position:sticky;top:0;z-index:50;display:flex;align-items:center;gap:10px;padding:14px 16px;background:rgba(10,10,10,.95);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+.top img{height:40px}
+.top h1{font-size:1.05rem}
+.top h1 span{color:var(--pink)}
+.top .right{margin-left:auto;font-size:.75rem;color:var(--muted)}
+.iconbtn{display:inline-flex;align-items:center;justify-content:center;background:none;border:1px solid #2a2a2a;border-radius:8px;color:#eaeaea;padding:7px 9px;margin-left:8px}
+
+/* Icons */
+.icon{width:24px;height:24px;flex-shrink:0;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;fill:none}
+.nav button .ic .icon{width:23px;height:23px}
+.iconbtn .icon{width:18px;height:18px}
+
+/* Accessibility & interaction */
+*{-webkit-tap-highlight-color:transparent}
+:focus-visible{outline:2px solid var(--blue);outline-offset:2px;border-radius:6px}
+@media(prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:.001ms!important;animation-iteration-count:1!important;transition-duration:.001ms!important;scroll-behavior:auto!important}
+}
+
+/* Views */
+.view{display:none;padding:16px;max-width:640px;margin:0 auto}
+.view.active{display:block}
+.vtitle{font-size:1.2rem;margin:6px 0 14px}
+.vtitle em{font-style:normal;background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+.backbtn{background:none;border:1px solid var(--line);border-radius:8px;color:var(--muted);padding:5px 12px;font-size:.8rem;font-weight:600;margin-bottom:10px}
+
+/* Cards & stats */
+.stat-row{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:12px}
+.stat-card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px;text-align:center}
+.stat-card b{font-family:'Oswald',sans-serif;font-size:1.15rem;display:block;background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+.stat-card span{font-size:.64rem;color:var(--muted);text-transform:uppercase;letter-spacing:.06em}
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px;margin-bottom:10px}
+.card h3{font-size:.95rem;margin-bottom:2px}
+.card .sub{font-size:.8rem;color:var(--muted)}
+.warn{border-color:var(--amber)}
+.alert{border-color:var(--pink)}
+.empty{color:var(--muted);text-align:center;padding:30px 10px;font-size:.9rem}
+.rowbtns{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
+
+/* Status pills */
+.pill{display:inline-block;font-size:.66rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;padding:3px 10px;border-radius:20px}
+.pill.new{background:#3a2a00;color:var(--amber)}
+.pill.quoted,.pill.sent{background:#0d2a44;color:var(--blue)}
+.pill.deposit,.pill.draft{background:#2a1044;color:#c9a0ff}
+.pill.confirmed,.pill.accepted{background:#0d3320;color:var(--green)}
+.pill.done,.pill.converted,.pill.expired{background:#222;color:var(--muted)}
+.pill.lost,.pill.declined{background:#330d0d;color:#ff7070}
+
+/* Filter chips */
+.chips{display:flex;gap:8px;overflow-x:auto;padding-bottom:8px;margin-bottom:10px;-webkit-overflow-scrolling:touch}
+.chips button{flex-shrink:0;background:var(--card);border:1px solid var(--line);color:var(--muted);padding:7px 14px;border-radius:20px;font-size:.8rem;font-weight:600}
+.chips button.active{background:linear-gradient(120deg,var(--pink),var(--purple));border-color:transparent;color:#fff}
+
+/* Event / list rows */
+.ev{display:flex;flex-direction:column;gap:8px}
+.ev-head{display:flex;justify-content:space-between;align-items:flex-start;gap:8px}
+.ev-actions{display:flex;gap:8px;flex-wrap:wrap}
+.mini{border:none;border-radius:8px;padding:8px 12px;font-size:.78rem;font-weight:700;color:#fff}
+.mini.wa{background:#1da851}
+.mini.call{background:linear-gradient(135deg,var(--purple),var(--blue))}
+.mini.adv{background:linear-gradient(120deg,var(--pink),var(--purple))}
+.mini.ghost{background:var(--card2);color:var(--text);border:1px solid var(--line)}
+.money{font-size:.8rem}
+.money b.ok{color:var(--green)}
+.money b.due{color:var(--amber)}
+
+/* Calendar */
+.cal-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
+.cal-head h3{font-size:1rem}
+.cal-head button{background:var(--card);border:1px solid var(--line);color:var(--text);width:34px;height:34px;border-radius:8px;font-size:1rem}
+.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;margin-bottom:10px}
+.cal-dow{text-align:center;font-size:.62rem;color:var(--muted);text-transform:uppercase;padding:4px 0}
+.cal-day{aspect-ratio:1;display:flex;flex-direction:column;align-items:center;justify-content:center;border-radius:8px;font-size:.8rem;color:#cfcfcf;position:relative;background:var(--card);border:1px solid transparent}
+.cal-day.other{opacity:.25}
+.cal-day.today{border-color:var(--blue)}
+.cal-day .dots{position:absolute;bottom:4px;display:flex;gap:2px}
+.cal-day .dot{width:5px;height:5px;border-radius:50%}
+.legend{display:flex;gap:10px;flex-wrap:wrap;font-size:.68rem;color:var(--muted);margin-bottom:14px}
+.legend span{display:inline-flex;align-items:center;gap:4px}
+.legend i{width:8px;height:8px;border-radius:50%;display:inline-block}
+
+/* Forms */
+.field{margin-bottom:12px}
+.field label{display:block;font-size:.72rem;font-weight:600;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);margin-bottom:5px}
+.field input,.field select,.field textarea{width:100%;background:var(--card2);border:1px solid var(--line);border-radius:8px;color:#fff;padding:11px 12px;font-size:16px;font-family:inherit}
+.field input:focus,.field select:focus,.field textarea:focus{outline:none;border-color:var(--pink)}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.three{display:grid;grid-template-columns:2fr 1fr 1fr auto;gap:6px;align-items:center}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;width:100%;padding:13px;border-radius:10px;font-weight:700;font-size:.92rem;border:none;color:#fff;background:linear-gradient(120deg,var(--pink),var(--purple))}
+.btn.blue{background:linear-gradient(135deg,var(--purple),var(--blue))}
+.btn.ghost{background:var(--card2);border:1px solid var(--line);color:var(--text)}
+.btn.danger{background:#5a1414}
+.searchbar{width:100%;background:var(--card2);border:1px solid var(--line);border-radius:10px;color:#fff;padding:11px 14px;font-size:16px;margin-bottom:12px}
+.searchbar:focus{outline:none;border-color:var(--pink)}
+
+/* Checklist */
+.chk{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px dashed var(--line);font-size:.88rem}
+.chk input{width:19px;height:19px;accent-color:var(--pink)}
+.chk.done span{text-decoration:line-through;color:var(--muted)}
+
+/* Quote builder rows */
+.q-line{display:flex;justify-content:space-between;font-size:.85rem;padding:7px 0;border-bottom:1px dashed var(--line);color:#cfcfcf}
+.q-total{display:flex;justify-content:space-between;font-family:'Oswald',sans-serif;font-size:1.35rem;padding-top:12px;margin-bottom:14px}
+.qb-item{display:grid;grid-template-columns:1fr 62px 92px 34px;gap:6px;margin-bottom:6px;align-items:center}
+.qb-item input{background:var(--card2);border:1px solid var(--line);border-radius:8px;color:#fff;padding:9px 10px;font-size:.85rem;width:100%}
+.qb-item .del{background:#330d0d;color:#ff7070;border:none;border-radius:8px;height:36px;font-size:1rem}
+.qb-head{display:grid;grid-template-columns:1fr 62px 92px 34px;gap:6px;font-size:.66rem;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px}
+
+/* Inline editors (services/equipment) */
+.edit-row{display:grid;grid-template-columns:1fr 92px 34px;gap:6px;margin-bottom:6px;align-items:center}
+.edit-row input,.edit-row select{background:var(--card2);border:1px solid var(--line);border-radius:8px;color:#fff;padding:9px 10px;font-size:.85rem;width:100%}
+.edit-row .del{background:#330d0d;color:#ff7070;border:none;border-radius:8px;height:36px;font-size:1rem}
+.equip-row{display:grid;grid-template-columns:1fr 110px 34px;gap:6px;margin-bottom:6px;align-items:center}
+.equip-row input,.equip-row select{background:var(--card2);border:1px solid var(--line);border-radius:8px;color:#fff;padding:9px 10px;font-size:.85rem;width:100%}
+.equip-row .del{background:#330d0d;color:#ff7070;border:none;border-radius:8px;height:36px;font-size:1rem}
+
+/* Bottom nav */
+.nav{position:fixed;bottom:0;left:0;right:0;z-index:60;display:flex;background:rgba(12,12,12,.97);backdrop-filter:blur(10px);border-top:1px solid var(--line);padding-bottom:env(safe-area-inset-bottom)}
+.nav button{flex:1;background:none;border:none;color:var(--muted);font-size:.62rem;font-weight:600;padding:9px 0 7px;display:flex;flex-direction:column;align-items:center;gap:2px;text-transform:uppercase;letter-spacing:.04em}
+.nav button .ic{font-size:1.25rem}
+.nav button.active{color:#fff}
+.nav button.active .ic{filter:drop-shadow(0 0 8px var(--pink))}
+
+/* Modal */
+.modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:100;display:none;align-items:flex-end;justify-content:center}
+.modal-bg.open{display:flex}
+.modal{background:var(--dark);border:1px solid var(--line);border-radius:18px 18px 0 0;width:100%;max-width:640px;max-height:88vh;overflow-y:auto;padding:20px 18px 30px}
+.modal h2{font-size:1.05rem;margin-bottom:14px}
+.modal .close{float:right;background:none;border:none;color:var(--muted);font-size:1.4rem;line-height:1}
+
+/* FAB */
+.fab{position:fixed;right:16px;bottom:calc(84px + env(safe-area-inset-bottom));z-index:70;width:56px;height:56px;border-radius:50%;border:none;background:linear-gradient(120deg,var(--pink),var(--purple));color:#fff;font-size:1.7rem;box-shadow:0 6px 20px rgba(255,45,164,.4)}
+
+.toast{position:fixed;left:50%;bottom:calc(80px + env(safe-area-inset-bottom));transform:translateX(-50%) translateY(140px);background:#1e1e1e;border:1px solid var(--pink);color:#fff;padding:12px 20px;border-radius:10px;font-size:.85rem;z-index:200;transition:transform .3s;max-width:90%}
+.toast.show{transform:translateX(-50%) translateY(0)}
+
+/* Lock screen */
+.lock{position:fixed;inset:0;z-index:500;background:
+  radial-gradient(ellipse 70% 50% at 50% 0%,rgba(255,45,164,.14),transparent 60%),
+  linear-gradient(180deg,#0c0c0c,#080808);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;padding:24px}
+.lock img{height:130px}
+.lock h2{font-size:1.1rem}
+.lock input{width:210px;text-align:center;font-size:1.3rem;letter-spacing:.35em;background:#1e1e1e;border:1px solid #2a2a2a;border-radius:10px;color:#fff;padding:12px}
+.lock input:focus{outline:none;border-color:var(--pink)}
+.lock p{font-size:.78rem;color:#9a9a9a;max-width:280px;text-align:center}
+.lock.hidden{display:none}
+
+/* Light mode */
+body.light{--black:#f4f4f6;--dark:#ffffff;--card:#ffffff;--card2:#eef0f3;--text:#1c1c22;--muted:#5c5e66;--line:#d9dbe1}
+body.light .top{color:#eaeaea}
+body.light .top .right{color:#9a9a9a}
+body.light .nav button{color:#9a9a9a}
+body.light .nav button.active{color:#fff}
+body.light .cal-day{color:#3a3d44}
+body.light .field input,body.light .field select,body.light .field textarea,body.light .searchbar,body.light .qb-item input,body.light .edit-row input,body.light .edit-row select,body.light .equip-row input,body.light .equip-row select{color:#1c1c22}
+body.light .mini.ghost{color:#1c1c22}
+body.light .q-line{color:#3a3d44}
+</style>
+</head>
+<body>
+
+<div class="top">
+  <img src="logo.webp" alt="">
+  <h1><span>V8</span> Office</h1>
+  <div class="right" id="topDate"></div>
+  <button id="syncBtn" class="iconbtn" onclick="cloudSync(true)" aria-label="Sync now" title="Sync now" style="display:none"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg></button>
+  <button id="themeBtn" class="iconbtn" onclick="toggleTheme()" aria-label="Light or dark mode"></button>
+</div>
+
+<!-- LOCK SCREEN -->
+<div class="lock hidden" id="lockScreen">
+  <img src="logo.webp" alt="V8 Sound Machine">
+  <h2 id="lockTitle">Enter PIN</h2>
+  <input id="pinInput" type="password" inputmode="numeric" maxlength="8" autocomplete="off" placeholder="PIN">
+  <input id="pinConfirm" type="password" inputmode="numeric" maxlength="8" autocomplete="off" placeholder="Confirm PIN" style="display:none">
+  <button class="btn" style="width:210px" onclick="pinSubmit()">Unlock</button>
+  <p id="lockMsg">This PIN protects the app on this device.</p>
+</div>
+
+<!-- DASHBOARD -->
+<div class="view active" id="view-dash">
+  <h2 class="vtitle">Dash<em>board</em></h2>
+  <div class="stat-row">
+    <div class="stat-card"><b id="stUpcoming">0</b><span>Upcoming</span></div>
+    <div class="stat-card"><b id="stNew">0</b><span>New Leads</span></div>
+    <div class="stat-card"><b id="stOwed">R0</b><span>Outstanding</span></div>
+  </div>
+  <div class="stat-row">
+    <div class="stat-card"><b id="stRevM">R0</b><span>Rev. This Month</span></div>
+    <div class="stat-card"><b id="stRevY">R0</b><span>Rev. This Year</span></div>
+    <div class="stat-card"><b id="stQuotes">0</b><span>Open Quotes</span></div>
+  </div>
+  <div id="dashAlerts"></div>
+  <h3 style="font-size:.85rem;color:var(--muted);margin:16px 0 8px">Next up</h3>
+  <div id="dashNext"></div>
+</div>
+
+<!-- JOBS / PIPELINE -->
+<div class="view" id="view-pipe">
+  <h2 class="vtitle">Jobs & <em>Pipeline</em></h2>
+  <div class="chips" id="pipeChips">
+    <button class="active" data-f="active">Active</button>
+    <button data-f="new">New</button>
+    <button data-f="quoted">Quoted</button>
+    <button data-f="deposit">Deposit Paid</button>
+    <button data-f="confirmed">Confirmed</button>
+    <button data-f="done">Done</button>
+    <button data-f="lost">Lost</button>
+    <button data-f="all">All</button>
+  </div>
+  <div id="pipeList"></div>
+</div>
+
+<!-- CLIENTS -->
+<div class="view" id="view-clients">
+  <h2 class="vtitle">Cli<em>ents</em></h2>
+  <input class="searchbar" id="clientSearch" placeholder="🔍 Search clients…" oninput="renderClients()">
+  <div id="clientList"></div>
+</div>
+
+<!-- CLIENT PROFILE -->
+<div class="view" id="view-client">
+  <button class="backbtn" onclick="go('clients')">← All clients</button>
+  <div id="clientProfile"></div>
+</div>
+
+<!-- CALENDAR -->
+<div class="view" id="view-cal">
+  <h2 class="vtitle">Cal<em>endar</em></h2>
+  <div class="cal-head">
+    <button onclick="calMove(-1)">‹</button>
+    <h3 id="calTitle"></h3>
+    <button onclick="calMove(1)">›</button>
+  </div>
+  <div class="cal-grid" id="calGrid"></div>
+  <div class="legend" id="calLegend"></div>
+  <h3 style="font-size:.85rem;color:var(--muted);margin:4px 0 8px">Events this month</h3>
+  <div id="calList"></div>
+</div>
+
+<!-- QUOTES LIST -->
+<div class="view" id="view-quotes">
+  <button class="backbtn" onclick="go('set')">← More</button>
+  <h2 class="vtitle">Quo<em>tes</em></h2>
+  <div class="chips" id="quoteChips">
+    <button class="active" data-f="open">Open</button>
+    <button data-f="draft">Draft</button>
+    <button data-f="sent">Sent</button>
+    <button data-f="accepted">Accepted</button>
+    <button data-f="all">All</button>
+  </div>
+  <div id="quoteList"></div>
+</div>
+
+<!-- QUOTE BUILDER -->
+<div class="view" id="view-qb">
+  <button class="backbtn" onclick="go('quotes')">← Quotes</button>
+  <h2 class="vtitle">Quote <em>Builder</em></h2>
+  <div class="card">
+    <div class="two">
+      <div class="field"><label>Client</label><select id="qbClient"></select></div>
+      <div class="field"><label>Event type</label>
+        <select id="qbType">
+          <option value="wedding">Wedding</option><option value="party">Birthday / Private</option>
+          <option value="corporate">Corporate</option><option value="school">School</option>
+          <option value="church">Church</option><option value="other">Other</option>
+        </select>
+      </div>
+    </div>
+    <div class="two">
+      <div class="field"><label>Event date</label><input type="date" id="qbDate"></div>
+      <div class="field"><label>Venue</label><input id="qbVenue" placeholder="Venue, town"></div>
+    </div>
+    <div class="field"><label>Start from package</label>
+      <select id="qbPackage" onchange="qbLoadPackage()"><option value="">— blank quote —</option></select>
+    </div>
+    <div class="field"><label>Line items</label>
+      <div class="qb-head"><span>Service</span><span>Qty</span><span>Price</span><span></span></div>
+      <div id="qbItems"></div>
+      <div class="rowbtns">
+        <select id="qbAddSel" style="flex:1;background:var(--card2);border:1px solid var(--line);border-radius:8px;color:inherit;padding:9px 10px;font-size:.85rem"></select>
+        <button type="button" class="mini adv" onclick="qbAddService()">＋ Add</button>
+        <button type="button" class="mini ghost" onclick="qbAddCustom()">＋ Custom line</button>
+      </div>
+    </div>
+    <div class="two">
+      <div class="field"><label>Discount (R)</label><input type="number" id="qbDiscount" min="0" value="0" oninput="qbCalc()"></div>
+      <div class="field"><label>Travel fee (R)</label><input type="number" id="qbTravel" min="0" value="0" oninput="qbCalc()"></div>
+    </div>
+    <div class="two">
+      <div class="field"><label>Deposit %</label><input type="number" id="qbDeposit" min="0" max="100" value="50" oninput="qbCalc()"></div>
+      <div class="field"><label>Valid for (days)</label><input type="number" id="qbValid" min="1" value="14"></div>
+    </div>
+    <div class="field"><label>Notes on quote</label><textarea id="qbNotes" rows="2" placeholder="Anything specific to this event…"></textarea></div>
+    <div id="qbBreakdown"></div>
+    <div class="q-total"><span>Total</span><span id="qbTotal" style="background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent">R0</span></div>
+    <button class="btn" onclick="qbSave()">💾 Save Quote</button>
+    <div style="height:8px"></div>
+    <button class="btn blue" onclick="qbSaveAsPackage()">Save items as new package</button>
+  </div>
+</div>
+
+<!-- SERVICES & PACKAGES -->
+<div class="view" id="view-services">
+  <button class="backbtn" onclick="go('set')">← More</button>
+  <h2 class="vtitle">Services & <em>Pricing</em></h2>
+  <div class="card">
+    <h3 style="margin-bottom:8px">Services</h3>
+    <p class="sub" style="margin-bottom:10px">One price list used by every new quote. Edit and tap save.</p>
+    <div id="svcList"></div>
+    <div class="rowbtns">
+      <button class="mini adv" onclick="svcAdd()">＋ Add service</button>
+      <button class="mini ghost" onclick="svcSave()">💾 Save all</button>
+    </div>
+  </div>
+  <div class="card">
+    <h3 style="margin-bottom:8px">Packages</h3>
+    <p class="sub" style="margin-bottom:10px">Packages are collections of services. Tick what's included.</p>
+    <div id="pkgList"></div>
+    <button class="mini adv" onclick="pkgAdd()">＋ Add package</button>
+  </div>
+</div>
+
+<!-- EQUIPMENT -->
+<div class="view" id="view-equip">
+  <button class="backbtn" onclick="go('set')">← More</button>
+  <h2 class="vtitle">Equip<em>ment</em></h2>
+  <div class="card">
+    <p class="sub" style="margin-bottom:10px">Your inventory. Assign items to bookings from the booking's edit screen — the app blocks double-booking on the same date.</p>
+    <div id="eqList"></div>
+    <div class="rowbtns">
+      <button class="mini adv" onclick="eqAdd()">＋ Add equipment</button>
+      <button class="mini ghost" onclick="eqSave()">💾 Save all</button>
+    </div>
+  </div>
+</div>
+
+<!-- MORE / SETTINGS -->
+<div class="view" id="view-set">
+  <h2 class="vtitle">More & <em>Settings</em></h2>
+  <div class="card">
+    <h3 style="margin-bottom:10px">Manage</h3>
+    <div class="rowbtns">
+      <button class="mini adv" onclick="go('quotes')">📄 Quotes</button>
+      <button class="mini call" onclick="go('services')">🎚️ Services & Pricing</button>
+      <button class="mini ghost" onclick="go('equip')">🔊 Equipment</button>
+    </div>
+  </div>
+  <div class="card">
+    <h3 style="margin-bottom:10px">Cloud sync <span id="cloudStatus" class="pill new" style="vertical-align:middle">Off</span></h3>
+    <p class="sub" style="margin-bottom:12px">Sign in once and new website enquiries flow straight into your pipeline — no keys or URLs needed.</p>
+    <div class="two">
+      <div class="field"><label>Your email</label><input id="cEmail" type="email" placeholder="you@example.com"></div>
+      <div class="field"><label>Password</label><input id="cPass" type="password" placeholder="••••••••"></div>
+    </div>
+    <button class="btn blue" onclick="cloudConnect()">Sign In & Sync</button>
+    <div style="height:8px"></div>
+    <button class="btn ghost" onclick="cloudDisconnect()">Sign Out</button>
+    <p class="sub" style="margin-top:10px;font-size:.72rem">Your sign-in is stored only on this device.</p>
+  </div>
+  <div class="card">
+    <h3 style="margin-bottom:10px">Security</h3>
+    <p class="sub" style="margin-bottom:12px">The app is protected by a PIN on this device.</p>
+    <button class="btn ghost" onclick="changePin()">Change PIN</button>
+  </div>
+  <div class="card">
+    <h3 style="margin-bottom:10px">Invoice details</h3>
+    <p class="sub" style="margin-bottom:12px">Shown on your quotes and invoices so clients can pay you.</p>
+    <div class="field"><label>Banking details</label><textarea id="bizBank" rows="3" placeholder="Bank name&#10;Account holder&#10;Account number · Branch code"></textarea></div>
+    <div class="field"><label>VAT / Company reg (optional)</label><input id="bizVat" placeholder="e.g. Reg 2026/123456/07"></div>
+    <button class="btn ghost" onclick="bizSave()">Save invoice details</button>
+  </div>
+  <div class="card">
+    <h3 style="margin-bottom:10px">Backup</h3>
+    <p class="sub" style="margin-bottom:12px">Your data lives on this device. Export a backup regularly — it downloads a file you can re-import on any device.</p>
+    <button class="btn ghost" onclick="exportData()">⬇ Export backup (JSON)</button>
+    <div style="height:8px"></div>
+    <input type="file" id="importFile" accept=".json" style="display:none" onchange="importData(event)">
+    <button class="btn ghost" onclick="document.getElementById('importFile').click()">⬆ Import backup</button>
+  </div>
+  <div class="card">
+    <h3 style="margin-bottom:10px">Danger zone</h3>
+    <button class="btn danger" onclick="wipeData()">Delete all data</button>
+  </div>
+  <p class="sub" style="text-align:center;margin-top:16px;color:var(--muted);font-size:.75rem">V8 Office v2.0 — CRM edition. Offline-first; Phase B adds the shared cloud database & staff accounts.</p>
+</div>
+
+<button class="fab" id="fabBtn" onclick="fabAction()" aria-label="Add">＋</button>
+
+<!-- BOTTOM NAV -->
+<div class="nav">
+  <button class="active" data-v="dash" onclick="go('dash',this)"><span class="ic"><svg class="icon icon-fill" viewBox="0 0 24 24" aria-hidden="true" style="fill:currentColor;stroke:none"><path d="M13 2 3 14h7l-1 8 10-12h-7z"/></svg></span>Dash</button>
+  <button data-v="pipe" onclick="go('pipe',this)"><span class="ic"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="8" y="2" width="8" height="4" rx="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><line x1="8" y1="11" x2="8" y2="11"/><line x1="12" y1="11" x2="16" y2="11"/><line x1="8" y1="15" x2="8" y2="15"/><line x1="12" y1="15" x2="16" y2="15"/></svg></span>Jobs</button>
+  <button data-v="clients" onclick="go('clients',this)"><span class="ic"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></span>Clients</button>
+  <button data-v="cal" onclick="go('cal',this)"><span class="ic"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></span>Calendar</button>
+  <button data-v="set" onclick="go('set',this)"><span class="ic"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg></span>More</button>
+</div>
+
+<!-- EVENT / BOOKING MODAL -->
+<div class="modal-bg" id="modalBg" onclick="if(event.target===this)closeModal()">
+  <div class="modal">
+    <button class="close" onclick="closeModal()">✕</button>
+    <h2 id="modalTitle">New Lead</h2>
+    <form id="evForm" onsubmit="return saveEvent(event)">
+      <input type="hidden" id="fId">
+      <div class="field"><label>Client</label><select id="fClient" onchange="if(this.value==='__new')newClientInline()"></select></div>
+      <div class="two">
+        <div class="field"><label>Event type</label>
+          <select id="fType">
+            <option value="party">Party</option><option value="wedding">Wedding</option>
+            <option value="corporate">Corporate</option><option value="school">School</option>
+            <option value="church">Church</option><option value="other">Other</option>
+          </select>
+        </div>
+        <div class="field"><label>Status</label>
+          <select id="fStatus">
+            <option value="new">New lead</option><option value="quoted">Quoted</option>
+            <option value="deposit">Deposit paid</option><option value="confirmed">Confirmed</option>
+            <option value="done">Done</option><option value="lost">Lost</option>
+          </select>
+        </div>
+      </div>
+      <div class="two">
+        <div class="field"><label>Date *</label><input id="fDate" type="date" required></div>
+        <div class="field"><label>Start time</label><input id="fTime" type="time"></div>
+      </div>
+      <div class="field"><label>Venue</label><input id="fVenue" placeholder="Venue, town"></div>
+      <div class="field"><label>Quoted price (R)</label><input id="fPrice" type="number" min="0" step="50"></div>
+      <div id="fPayWrap"></div>
+      <div class="field"><label>Notes</label><textarea id="fNotes" rows="3" placeholder="Add-ons, music style, contact person…"></textarea></div>
+      <div id="fEquipWrap"></div>
+      <div id="fDocsWrap"></div>
+      <div id="fChecklistWrap"></div>
+      <button class="btn" type="submit">Save</button>
+      <div style="height:8px"></div>
+      <button class="btn danger" type="button" id="fDelete" style="display:none" onclick="deleteEvent()">Delete this booking</button>
+    </form>
+  </div>
+</div>
+
+<!-- CLIENT MODAL -->
+<div class="modal-bg" id="clientModalBg" onclick="if(event.target===this)closeClientModal()">
+  <div class="modal">
+    <button class="close" onclick="closeClientModal()">✕</button>
+    <h2 id="clientModalTitle">New Client</h2>
+    <form onsubmit="return saveClient(event)">
+      <input type="hidden" id="cId">
+      <div class="two">
+        <div class="field"><label>Full name *</label><input id="cName" required></div>
+        <div class="field"><label>Company (optional)</label><input id="cCompany"></div>
+      </div>
+      <div class="two">
+        <div class="field"><label>Phone *</label><input id="cPhone" type="tel" required></div>
+        <div class="field"><label>Email</label><input id="cMail" type="email"></div>
+      </div>
+      <div class="field"><label>Address</label><input id="cAddress" placeholder="Street, town"></div>
+      <div class="field"><label>Internal notes</label><textarea id="cNotes" rows="3" placeholder="Preferences, history, anything useful…"></textarea></div>
+      <button class="btn" type="submit">Save Client</button>
+      <div style="height:8px"></div>
+      <button class="btn danger" type="button" id="cDelete" style="display:none" onclick="deleteClient()">Delete client</button>
+    </form>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+/* ================= STATE & MIGRATION ================= */
+const KEY="v8office";
+let db=load();
+function load(){try{return JSON.parse(localStorage.getItem(KEY))||{}}catch(e){return{}}}
+function persist(){localStorage.setItem(KEY,JSON.stringify(db))}
+function save(){persist();renderAll()}
+const R=n=>"R"+(+n||0).toLocaleString();
+const uid=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,6);
+const todayStr=()=>new Date().toISOString().slice(0,10);
+const STATUS_FLOW=["new","quoted","deposit","confirmed","done"];
+const STATUS_LABEL={new:"New",quoted:"Quoted",deposit:"Deposit Paid",confirmed:"Confirmed",done:"Done",lost:"Lost"};
+const TYPE_ICON={wedding:"💍",party:"🎉",corporate:"💼",school:"🏫",church:"⛪",other:"🎵"};
+const TYPE_NAME={wedding:"Wedding",party:"Birthday / Private Function",corporate:"Corporate Function",school:"School Event",church:"Church Event",other:"Event"};
+const TYPE_COLOR={wedding:"#ff2da4",party:"#8b3dff",corporate:"#27a6ff",school:"#ffb400",church:"#2ecc71",other:"#9a9a9a"};
+const QSTATUS={draft:"Draft",sent:"Sent",accepted:"Accepted",declined:"Declined",expired:"Expired",converted:"Converted"};
+
+function migrate(){
+  db.events=db.events||[];
+  db.clients=db.clients||[];
+  db.quotes=db.quotes||[];
+  db.equipment=db.equipment||[];
+  db.seq=db.seq||{q:0,i:0};
+  if(!db.services||!db.services.length){
+    db.services=[
+      {id:uid(),name:"Wedding Ceremony Audio",price:1950},
+      {id:uid(),name:"Professional DJ (up to 5 hrs)",price:2500},
+      {id:uid(),name:"Sound System Hire",price:1500},
+      {id:uid(),name:"Event Lighting",price:800},
+      {id:uid(),name:"Premium Lighting",price:1500},
+      {id:uid(),name:"Wireless Microphone",price:250},
+      {id:uid(),name:"MC Support",price:1500},
+      {id:uid(),name:"Music Planning Consultation",price:0},
+      {id:uid(),name:"Travel",price:500},
+      {id:uid(),name:"Extra Hour",price:650},
+      {id:uid(),name:"Additional Speaker",price:350},
+      {id:uid(),name:"Additional Lighting",price:400},
+      {id:uid(),name:"Subwoofer",price:450},
+      {id:uid(),name:"Smoke Machine",price:450},
+      {id:uid(),name:"Low-fog First Dance",price:950},
+      {id:uid(),name:"Projector & Screen",price:1200},
+      {id:uid(),name:"Generator",price:1800},
+      {id:uid(),name:"Setup & Pack-down",price:0}
+    ];
+  }
+  if(!db.packages||!db.packages.length){
+    const S=n=>{const s=db.services.find(x=>x.name===n);return s?s.id:null};
+    db.packages=[
+      {id:uid(),name:"Bronze",items:[[S("Sound System Hire"),1],[S("Wireless Microphone"),2],[S("Setup & Pack-down"),1]].filter(x=>x[0])},
+      {id:uid(),name:"Silver",items:[[S("Sound System Hire"),1],[S("Professional DJ (up to 5 hrs)"),1],[S("Wireless Microphone"),1],[S("Event Lighting"),1],[S("Setup & Pack-down"),1]].filter(x=>x[0])},
+      {id:uid(),name:"Gold",items:[[S("Wedding Ceremony Audio"),1],[S("Sound System Hire"),1],[S("Professional DJ (up to 5 hrs)"),1],[S("Premium Lighting"),1],[S("Wireless Microphone"),2],[S("MC Support"),1],[S("Setup & Pack-down"),1]].filter(x=>x[0])}
+    ];
+  }
+  // events: ensure clientId + payments[]
+  db.events.forEach(e=>{
+    if(!e.payments){e.payments=(+e.paid)?[{date:e.created||todayStr(),amount:+e.paid,note:"Recorded before payment log"}]:[]}
+    if(!e.equipment)e.equipment=[];
+    if(!e.clientId&&e.name){
+      let c=db.clients.find(c=>c.phone===e.phone&&e.phone||c.name===e.name);
+      if(!c){c={id:uid(),name:e.name,phone:e.phone||"",email:"",company:"",address:"",notes:"",created:e.created||todayStr()};db.clients.push(c)}
+      e.clientId=c.id;
+    }
+  });
+  persist();
+}
+function paidOf(e){return (e.payments||[]).reduce((s,p)=>s+(+p.amount||0),0)}
+function clientOf(x){return db.clients.find(c=>c.id===x.clientId)||{name:x.name||"Unknown",phone:x.phone||""}}
+
+/* ================= NAV ================= */
+const NAV_VIEWS=["dash","pipe","clients","cal","set"];
+function go(v,btn){
+  document.querySelectorAll('.view').forEach(x=>x.classList.remove('active'));
+  document.getElementById('view-'+v).classList.add('active');
+  document.querySelectorAll('.nav button').forEach(b=>b.classList.remove('active'));
+  const navBtn=btn||document.querySelector('.nav button[data-v="'+(NAV_VIEWS.includes(v)?v:'set')+'"]');
+  if(navBtn)navBtn.classList.add('active');
+  currentView=v;
+  if(v==='quotes')renderQuotes();
+  if(v==='services'){renderSvc();renderPkg()}
+  if(v==='equip')renderEq();
+  if(v==='clients')renderClients();
+  if(v==='qb')qbInitSelects();
+  window.scrollTo(0,0);
+}
+let currentView="dash";
+function fabAction(){
+  if(currentView==='clients'||currentView==='client')openClientModal();
+  else if(currentView==='quotes'||currentView==='qb')qbNew();
+  else openModal();
+}
+
+/* ================= HELPERS ================= */
+function waLink(phone,text){
+  let p=(phone||"").replace(/\D/g,"");
+  if(p.startsWith("0"))p="27"+p.slice(1);
+  return "https://wa.me/"+p+(text?"?text="+encodeURIComponent(text):"");
+}
+function telLink(phone){let p=(phone||"").replace(/\D/g,"");if(p.startsWith("0"))p="+27"+p.slice(1);return "tel:"+p}
+function fmtDate(d){if(!d)return "no date";const dt=new Date(d+"T00:00");return dt.toLocaleDateString("en-ZA",{weekday:"short",day:"numeric",month:"short",year:"numeric"})}
+function daysUntil(d){return Math.ceil((new Date(d+"T00:00")-new Date(todayStr()+"T00:00"))/86400000)}
+function toast(t){const el=document.getElementById('toast');el.textContent=t;el.classList.add('show');setTimeout(()=>el.classList.remove('show'),3000)}
+function esc(s){return String(s||"").replace(/&/g,"&amp;").replace(/</g,"&lt;")}
+
+/* ================= DASHBOARD ================= */
+function renderDash(){
+  const evs=db.events;
+  const upcoming=evs.filter(e=>["deposit","confirmed"].includes(e.status)&&e.date>=todayStr()).sort((a,b)=>a.date.localeCompare(b.date));
+  const newE=evs.filter(e=>e.status==="new");
+  const owed=evs.filter(e=>["deposit","confirmed"].includes(e.status)).reduce((s,e)=>s+Math.max(0,(+e.price||0)-paidOf(e)),0);
+  stUpcoming.textContent=upcoming.length;
+  stNew.textContent=newE.length;
+  stOwed.textContent=R(owed);
+  const ym=todayStr().slice(0,7),y=todayStr().slice(0,4);
+  let revM=0,revY=0;
+  evs.forEach(e=>(e.payments||[]).forEach(p=>{
+    if((p.date||"").startsWith(y))revY+=+p.amount||0;
+    if((p.date||"").startsWith(ym))revM+=+p.amount||0;
+  }));
+  stRevM.textContent=R(revM);stRevY.textContent=R(revY);
+  qExpireSweep();
+  stQuotes.textContent=db.quotes.filter(q=>["draft","sent"].includes(q.status)).length;
+
+  let alerts="";
+  const outToday=evs.filter(e=>e.date===todayStr()&&e.equipment&&e.equipment.length&&!["lost","done"].includes(e.status));
+  if(outToday.length){
+    const names=outToday.flatMap(e=>e.equipment.map(id=>(db.equipment.find(q=>q.id===id)||{}).name)).filter(Boolean);
+    alerts+=`<div class="card"><h3>🔊 Equipment out today</h3><div class="sub">${esc(names.join(", "))}</div></div>`;
+  }
+  upcoming.filter(e=>daysUntil(e.date)<=7&&paidOf(e)<(+e.price||0)).forEach(e=>{
+    const c=clientOf(e),due=(+e.price||0)-paidOf(e);
+    alerts+=`<div class="card warn"><h3>⚠ Balance due — ${esc(c.name)}</h3><div class="sub">${fmtDate(e.date)} · owes ${R(due)}</div>
+    <div class="ev-actions" style="margin-top:8px">
+      <a class="mini wa" href="${waLink(c.phone,"Hi "+c.name+"! Friendly reminder from V8 Sound Machine — the balance of "+R(due)+" for your event on "+fmtDate(e.date)+" is due. Thank you!")}" target="_blank">Send reminder</a>
+      <button class="mini ghost" onclick="openModal('${e.id}')">Open</button></div></div>`;
+  });
+  newE.forEach(e=>{
+    const c=clientOf(e);
+    alerts+=`<div class="card alert"><h3>🔔 New lead — ${esc(c.name)}</h3><div class="sub">${TYPE_ICON[e.type]||""} ${fmtDate(e.date)}${e.venue?" · "+esc(e.venue):""}</div>
+    <div class="ev-actions" style="margin-top:8px">
+      <a class="mini wa" href="${waLink(c.phone,"Hi "+c.name+"! Thanks for your enquiry with V8 Sound Machine. ")}" target="_blank">WhatsApp</a>
+      <a class="mini call" href="${telLink(c.phone)}">Call</a>
+      <button class="mini ghost" onclick="openModal('${e.id}')">Open</button></div></div>`;
+  });
+  dashAlerts.innerHTML=alerts||'<div class="card"><div class="sub">✅ Nothing urgent. Enjoy the quiet.</div></div>';
+  dashNext.innerHTML=upcoming.slice(0,4).map(evCard).join("")||'<div class="empty">No confirmed events coming up.<br>Tap ＋ to add one.</div>';
+}
+
+/* ================= PIPELINE ================= */
+let pipeFilter="active";
+document.getElementById('pipeChips').addEventListener('click',e=>{
+  if(e.target.tagName!=='BUTTON')return;
+  document.querySelectorAll('#pipeChips button').forEach(b=>b.classList.remove('active'));
+  e.target.classList.add('active');pipeFilter=e.target.dataset.f;renderPipe();
+});
+function renderPipe(){
+  let evs=[...db.events].sort((a,b)=>(a.date||"9999").localeCompare(b.date||"9999"));
+  if(pipeFilter==="active")evs=evs.filter(e=>!["done","lost"].includes(e.status));
+  else if(pipeFilter!=="all")evs=evs.filter(e=>e.status===pipeFilter);
+  pipeList.innerHTML=evs.map(evCard).join("")||'<div class="empty">Nothing here yet.</div>';
+}
+function evCard(e){
+  const c=clientOf(e);
+  const paid=paidOf(e);
+  const bal=Math.max(0,(+e.price||0)-paid);
+  const next=STATUS_FLOW[STATUS_FLOW.indexOf(e.status)+1];
+  const du=e.date?daysUntil(e.date):null;
+  return `<div class="card ev">
+    <div class="ev-head">
+      <div><h3 style="border-left:3px solid ${TYPE_COLOR[e.type]||"#999"};padding-left:8px">${TYPE_ICON[e.type]||"🎵"} ${esc(c.name)}</h3>
+      <div class="sub">${fmtDate(e.date)}${e.time?" · "+esc(e.time):""}${e.venue?" · "+esc(e.venue):""}${du!==null&&du>=0&&["deposit","confirmed"].includes(e.status)?` · <b style="color:var(--blue)">${du===0?"TODAY":du+"d away"}</b>`:""}</div></div>
+      <span class="pill ${e.status}">${STATUS_LABEL[e.status]}</span>
+    </div>
+    ${(+e.price)?`<div class="money">${R(e.price)} quoted · paid ${R(paid)} · <b class="${bal?"due":"ok"}">${bal?"owes "+R(bal):"paid in full ✓"}</b></div>`:""}
+    <div class="ev-actions">
+      <a class="mini wa" href="${waLink(c.phone)}" target="_blank">WhatsApp</a>
+      <a class="mini call" href="${telLink(c.phone)}">Call</a>
+      ${next&&e.status!=="done"&&e.status!=="lost"?`<button class="mini adv" onclick="advance('${e.id}')">→ ${STATUS_LABEL[next]}</button>`:""}
+      <button class="mini ghost" onclick="openModal('${e.id}')">Edit</button>
+      <button class="mini ghost" onclick="openClientProfile('${e.clientId}')">Client</button>
+    </div></div>`;
+}
+function advance(id){
+  const e=db.events.find(x=>x.id===id);if(!e)return;
+  const next=STATUS_FLOW[STATUS_FLOW.indexOf(e.status)+1];
+  if(next){e.status=next;save();toast(clientOf(e).name+" → "+STATUS_LABEL[next])}
+}
+
+/* ================= CLIENTS ================= */
+function renderClients(){
+  const q=(document.getElementById('clientSearch').value||"").toLowerCase();
+  let cs=[...db.clients].sort((a,b)=>a.name.localeCompare(b.name));
+  if(q)cs=cs.filter(c=>(c.name+" "+(c.company||"")+" "+(c.phone||"")+" "+(c.email||"")).toLowerCase().includes(q));
+  clientList.innerHTML=cs.map(c=>{
+    const evs=db.events.filter(e=>e.clientId===c.id);
+    const spend=evs.reduce((s,e)=>s+paidOf(e),0);
+    return `<div class="card ev">
+      <div class="ev-head"><div><h3>${esc(c.name)}${c.company?` <span style="color:var(--muted);font-weight:400;font-size:.8rem">· ${esc(c.company)}</span>`:""}</h3>
+      <div class="sub">${esc(c.phone||"no phone")}${c.email?" · "+esc(c.email):""} · ${evs.length} event${evs.length===1?"":"s"} · ${R(spend)} paid</div></div></div>
+      <div class="ev-actions">
+        <a class="mini wa" href="${waLink(c.phone)}" target="_blank">WhatsApp</a>
+        <button class="mini adv" onclick="openClientProfile('${c.id}')">Open profile</button>
+        <button class="mini ghost" onclick="openClientModal('${c.id}')">Edit</button>
+      </div></div>`;
+  }).join("")||'<div class="empty">No clients yet. Tap ＋ to add one.</div>';
+}
+function openClientModal(id){
+  clientModalBg.classList.add('open');
+  cId.value=id||"";cDelete.style.display=id?"block":"none";
+  clientModalTitle.textContent=id?"Edit Client":"New Client";
+  const c=id?db.clients.find(x=>x.id===id):null;
+  cName.value=c?c.name:"";cCompany.value=c?c.company||"":"";
+  cPhone.value=c?c.phone||"":"";cMail.value=c?c.email||"":"";
+  cAddress.value=c?c.address||"":"";cNotes.value=c?c.notes||"":"";
+}
+function closeClientModal(){clientModalBg.classList.remove('open')}
+function saveClient(ev){
+  ev.preventDefault();
+  const id=cId.value||uid();
+  let c=db.clients.find(x=>x.id===id);
+  if(!c){c={id,created:todayStr()};db.clients.push(c)}
+  Object.assign(c,{name:cName.value.trim(),company:cCompany.value.trim(),phone:cPhone.value.trim(),email:cMail.value.trim(),address:cAddress.value.trim(),notes:cNotes.value.trim()});
+  save();closeClientModal();toast("Saved — "+c.name);
+  if(document.getElementById('view-client').classList.contains('active'))openClientProfile(id);
+  return false;
+}
+function deleteClient(){
+  const id=cId.value,c=db.clients.find(x=>x.id===id);
+  const linked=db.events.filter(e=>e.clientId===id).length+db.quotes.filter(q=>q.clientId===id).length;
+  if(linked){toast("This client has "+linked+" linked records — remove those first");return}
+  if(c&&confirm("Delete "+c.name+"?")){db.clients=db.clients.filter(x=>x.id!==id);save();closeClientModal();go('clients');toast("Deleted")}
+}
+function newClientInline(){
+  closeModal();openClientModal();
+  toast("Save the client, then create the lead");
+}
+function openClientProfile(id){
+  const c=db.clients.find(x=>x.id===id);if(!c)return;
+  const evs=db.events.filter(e=>e.clientId===id).sort((a,b)=>(b.date||"").localeCompare(a.date||""));
+  const qs=db.quotes.filter(q=>q.clientId===id).sort((a,b)=>(b.date||"").localeCompare(a.date||""));
+  const pays=evs.flatMap(e=>(e.payments||[]).map(p=>({...p,ev:e}))).sort((a,b)=>(b.date||"").localeCompare(a.date||""));
+  const spend=pays.reduce((s,p)=>s+(+p.amount||0),0);
+  clientProfile.innerHTML=`
+    <div class="card">
+      <div class="ev-head"><div><h3>${esc(c.name)}</h3><div class="sub">${c.company?esc(c.company)+" · ":""}${esc(c.phone||"")}${c.email?" · "+esc(c.email):""}</div>
+      ${c.address?`<div class="sub">📍 ${esc(c.address)}</div>`:""}</div></div>
+      ${c.notes?`<div class="sub" style="margin-top:8px;white-space:pre-line">📝 ${esc(c.notes)}</div>`:""}
+      <div class="ev-actions" style="margin-top:10px">
+        <a class="mini wa" href="${waLink(c.phone)}" target="_blank">WhatsApp</a>
+        <a class="mini call" href="${telLink(c.phone)}">Call</a>
+        ${c.email?`<a class="mini ghost" href="mailto:${esc(c.email)}">Email</a>`:""}
+        <button class="mini ghost" onclick="openClientModal('${c.id}')">Edit</button>
+        <button class="mini adv" onclick="qbNew('${c.id}')">＋ New quote</button>
+      </div>
+    </div>
+    <div class="stat-row">
+      <div class="stat-card"><b>${evs.length}</b><span>Events</span></div>
+      <div class="stat-card"><b>${qs.length}</b><span>Quotes</span></div>
+      <div class="stat-card"><b>${R(spend)}</b><span>Total Paid</span></div>
+    </div>
+    <h3 style="font-size:.85rem;color:var(--muted);margin:14px 0 8px">Quotes</h3>
+    ${qs.map(quoteCard).join("")||'<div class="empty" style="padding:12px">No quotes yet.</div>'}
+    <h3 style="font-size:.85rem;color:var(--muted);margin:14px 0 8px">Events & bookings</h3>
+    ${evs.map(evCard).join("")||'<div class="empty" style="padding:12px">No events yet.</div>'}
+    <h3 style="font-size:.85rem;color:var(--muted);margin:14px 0 8px">Payments</h3>
+    ${pays.map(p=>`<div class="q-line"><span>${p.date||""} · ${TYPE_ICON[p.ev.type]||""} ${fmtDate(p.ev.date)}</span><span>${R(p.amount)}</span></div>`).join("")||'<div class="empty" style="padding:12px">No payments yet.</div>'}`;
+  go('client');
+}
+
+/* ================= CALENDAR ================= */
+let calY,calM;
+{const n=new Date();calY=n.getFullYear();calM=n.getMonth()}
+function calMove(d){calM+=d;if(calM<0){calM=11;calY--}if(calM>11){calM=0;calY++}renderCal()}
+function renderCal(){
+  const first=new Date(calY,calM,1);
+  calTitle.textContent=first.toLocaleDateString("en-ZA",{month:"long",year:"numeric"});
+  const dows=["Mo","Tu","We","Th","Fr","Sa","Su"];
+  let html=dows.map(d=>`<div class="cal-dow">${d}</div>`).join("");
+  let start=(first.getDay()+6)%7;
+  const daysIn=new Date(calY,calM+1,0).getDate();
+  const prevDays=new Date(calY,calM,0).getDate();
+  const evDates={};
+  db.events.filter(e=>e.status!=="lost").forEach(e=>{if(e.date){(evDates[e.date]=evDates[e.date]||[]).push(e.type)}});
+  for(let i=start-1;i>=0;i--)html+=`<div class="cal-day other">${prevDays-i}</div>`;
+  for(let d=1;d<=daysIn;d++){
+    const ds=`${calY}-${String(calM+1).padStart(2,"0")}-${String(d).padStart(2,"0")}`;
+    const types=evDates[ds]||[];
+    const dots=types.slice(0,3).map(t=>`<span class="dot" style="background:${TYPE_COLOR[t]||"#999"}"></span>`).join("");
+    html+=`<div class="cal-day${ds===todayStr()?" today":""}"${types.length?` style="border-color:${TYPE_COLOR[types[0]]}"`:""}>${d}${dots?`<span class="dots">${dots}</span>`:""}</div>`;
+  }
+  calGrid.innerHTML=html;
+  calLegend.innerHTML=Object.keys(TYPE_COLOR).map(t=>`<span><i style="background:${TYPE_COLOR[t]}"></i>${TYPE_NAME[t].split(" ")[0]}</span>`).join("");
+  const monthEvs=db.events.filter(e=>e.date&&e.date.startsWith(`${calY}-${String(calM+1).padStart(2,"0")}`)&&e.status!=="lost").sort((a,b)=>a.date.localeCompare(b.date));
+  const dupDates=Object.keys(evDates).filter(d=>evDates[d].length>1&&d.startsWith(`${calY}-${String(calM+1).padStart(2,"0")}`));
+  let listHtml=dupDates.length?`<div class="card warn"><div class="sub">⚠ More than one event on the same date this month — check gear & staffing.</div></div>`:"";
+  calList.innerHTML=listHtml+(monthEvs.map(evCard).join("")||'<div class="empty">No events this month.</div>');
+}
+
+/* ================= SERVICES & PACKAGES ================= */
+function renderSvc(){
+  svcList.innerHTML=db.services.map(s=>`
+    <div class="edit-row" data-id="${s.id}">
+      <input value="${esc(s.name)}" class="sv-name">
+      <input type="number" value="${s.price}" min="0" step="50" class="sv-price">
+      <button type="button" class="del" onclick="svcDel('${s.id}')">✕</button>
+    </div>`).join("");
+}
+function svcAdd(){db.services.push({id:uid(),name:"New service",price:0});renderSvc()}
+function svcDel(id){db.services=db.services.filter(s=>s.id!==id);db.packages.forEach(p=>p.items=p.items.filter(i=>i[0]!==id));renderSvc();renderPkg()}
+function svcSave(){
+  document.querySelectorAll('#svcList .edit-row').forEach(r=>{
+    const s=db.services.find(x=>x.id===r.dataset.id);
+    if(s){s.name=r.querySelector('.sv-name').value.trim();s.price=+r.querySelector('.sv-price').value||0}
+  });
+  persist();toast("Services saved — new quotes use the new prices");renderPkg();
+}
+function renderPkg(){
+  pkgList.innerHTML=db.packages.map(p=>{
+    const total=p.items.reduce((s,[id,q])=>{const sv=db.services.find(x=>x.id===id);return s+(sv?sv.price*q:0)},0);
+    return `<div class="card" style="background:var(--card2)" data-pkg="${p.id}">
+      <div class="ev-head"><input value="${esc(p.name)}" class="pk-name" style="background:transparent;border:none;color:inherit;font-family:'Oswald',sans-serif;font-size:1rem;text-transform:uppercase;width:60%">
+      <b>${R(total)}</b></div>
+      ${db.services.map(s=>{
+        const it=p.items.find(i=>i[0]===s.id);
+        return `<label class="chk"><input type="checkbox" data-sv="${s.id}" ${it?"checked":""} onchange="pkgTick('${p.id}','${s.id}',this.checked)">
+        <span style="flex:1">${esc(s.name)} <em style="color:var(--muted);font-style:normal">(${R(s.price)})</em></span>
+        ${it?`<input type="number" value="${it[1]}" min="1" style="width:52px;background:var(--card);border:1px solid var(--line);border-radius:6px;color:inherit;padding:4px" onchange="pkgQty('${p.id}','${s.id}',this.value)">`:""}</label>`;
+      }).join("")}
+      <div class="rowbtns">
+        <button type="button" class="mini ghost" onclick="pkgRename('${p.id}',this)">💾 Save name</button>
+        <button type="button" class="mini ghost" style="color:#ff7070" onclick="pkgDel('${p.id}')">Delete package</button>
+      </div>
+    </div>`;
+  }).join("");
+}
+function pkgTick(pid,sid,on){
+  const p=db.packages.find(x=>x.id===pid);if(!p)return;
+  if(on){if(!p.items.find(i=>i[0]===sid))p.items.push([sid,1])}
+  else p.items=p.items.filter(i=>i[0]!==sid);
+  persist();renderPkg();
+}
+function pkgQty(pid,sid,v){
+  const p=db.packages.find(x=>x.id===pid);const it=p&&p.items.find(i=>i[0]===sid);
+  if(it){it[1]=Math.max(1,+v||1);persist();renderPkg()}
+}
+function pkgRename(pid,btn){
+  const p=db.packages.find(x=>x.id===pid);
+  const inp=btn.closest('[data-pkg]').querySelector('.pk-name');
+  if(p&&inp){p.name=inp.value.trim()||p.name;persist();toast("Package saved")}
+}
+function pkgAdd(){db.packages.push({id:uid(),name:"New package",items:[]});persist();renderPkg()}
+function pkgDel(pid){if(confirm("Delete this package?")){db.packages=db.packages.filter(p=>p.id!==pid);persist();renderPkg()}}
+
+/* ================= EQUIPMENT ================= */
+const EQ_STATUS=["Available","Reserved","Maintenance","Retired"];
+function renderEq(){
+  eqList.innerHTML=db.equipment.map(q=>{
+    const onEv=db.events.find(e=>e.date===todayStr()&&(e.equipment||[]).includes(q.id)&&!["lost","done"].includes(e.status));
+    return `<div class="equip-row" data-id="${q.id}">
+      <input value="${esc(q.name)}" class="eq-name" placeholder="Item name">
+      <select class="eq-status">${EQ_STATUS.map(s=>`<option ${q.status===s?"selected":""}>${s}</option>`).join("")}</select>
+      <button type="button" class="del" onclick="eqDel('${q.id}')">✕</button>
+    </div>${onEv?`<div class="sub" style="margin:-2px 0 8px 4px;color:var(--amber)">↳ out on event today</div>`:""}`;
+  }).join("")||'<div class="empty" style="padding:12px">No equipment yet.</div>';
+}
+function eqAdd(){db.equipment.push({id:uid(),name:"",status:"Available",created:todayStr()});renderEq()}
+function eqDel(id){db.equipment=db.equipment.filter(q=>q.id!==id);db.events.forEach(e=>e.equipment=(e.equipment||[]).filter(x=>x!==id));persist();renderEq()}
+function eqSave(){
+  document.querySelectorAll('#eqList .equip-row').forEach(r=>{
+    const q=db.equipment.find(x=>x.id===r.dataset.id);
+    if(q){q.name=r.querySelector('.eq-name').value.trim();q.status=r.querySelector('.eq-status').value}
+  });
+  db.equipment=db.equipment.filter(q=>q.name);
+  persist();toast("Equipment saved");renderEq();
+}
+function eqAvailableFor(date,evId){
+  return db.equipment.filter(q=>{
+    if(q.status==="Retired"||q.status==="Maintenance")return false;
+    const clash=db.events.find(e=>e.id!==evId&&e.date===date&&(e.equipment||[]).includes(q.id)&&!["lost","done"].includes(e.status));
+    return !clash;
+  });
+}
+
+/* ================= QUOTES ================= */
+function qExpireSweep(){
+  const t=todayStr();
+  db.quotes.forEach(q=>{if(q.status==="sent"&&q.expiry&&q.expiry<t)q.status="expired"});
+}
+let quoteFilter="open";
+document.getElementById('quoteChips').addEventListener('click',e=>{
+  if(e.target.tagName!=='BUTTON')return;
+  document.querySelectorAll('#quoteChips button').forEach(b=>b.classList.remove('active'));
+  e.target.classList.add('active');quoteFilter=e.target.dataset.f;renderQuotes();
+});
+function renderQuotes(){
+  qExpireSweep();persist();
+  let qs=[...db.quotes].sort((a,b)=>(b.date||"").localeCompare(a.date||""));
+  if(quoteFilter==="open")qs=qs.filter(q=>["draft","sent","accepted"].includes(q.status));
+  else if(quoteFilter!=="all")qs=qs.filter(q=>q.status===quoteFilter);
+  quoteList.innerHTML=qs.map(quoteCard).join("")||'<div class="empty">No quotes here. Tap ＋ to build one.</div>';
+}
+function quoteCard(q){
+  const c=db.clients.find(x=>x.id===q.clientId)||{name:"?"};
+  return `<div class="card ev">
+    <div class="ev-head"><div><h3>${q.no} — ${esc(c.name)}</h3>
+    <div class="sub">${TYPE_ICON[q.type]||""} ${q.eventDate?fmtDate(q.eventDate):"date TBC"} · issued ${q.date}${q.expiry?" · valid till "+q.expiry:""}</div></div>
+    <span class="pill ${q.status}">${QSTATUS[q.status]}</span></div>
+    <div class="money"><b>${R(q.total)}</b> · deposit ${q.depositPct||50}%</div>
+    <div class="ev-actions">
+      <button class="mini ghost" onclick="qbEdit('${q.id}')">Edit</button>
+      <button class="mini call" onclick="genQuoteDoc('${q.id}')">📄 PDF</button>
+      ${q.status==="draft"?`<button class="mini adv" onclick="qSetStatus('${q.id}','sent')">Mark Sent</button>`:""}
+      ${q.status==="sent"?`<button class="mini adv" onclick="qSetStatus('${q.id}','accepted')">✓ Accepted</button>
+      <button class="mini ghost" style="color:#ff7070" onclick="qSetStatus('${q.id}','declined')">Declined</button>`:""}
+      ${q.status==="accepted"?`<button class="mini adv" onclick="qConvert('${q.id}')">→ Convert to Booking</button>`:""}
+      ${q.status!=="converted"?`<button class="mini ghost" style="color:#ff7070" onclick="qDelete('${q.id}')">🗑</button>`:""}
+    </div></div>`;
+}
+function qSetStatus(id,s){const q=db.quotes.find(x=>x.id===id);if(q){q.status=s;persist();renderQuotes();renderDash();toast("Quote "+q.no+" → "+QSTATUS[s])}}
+function qDelete(id){if(confirm("Delete this quote?")){db.quotes=db.quotes.filter(q=>q.id!==id);persist();renderQuotes()}}
+function qConvert(id){
+  const q=db.quotes.find(x=>x.id===id);if(!q)return;
+  const e={
+    id:uid(),created:todayStr(),clientId:q.clientId,
+    type:q.type||"other",date:q.eventDate||"",time:"",venue:q.venue||"",
+    price:q.total,payments:[],equipment:[],status:"quoted",
+    notes:"From quote "+q.no+": "+q.items.map(i=>i.name+(i.qty>1?" ×"+i.qty:"")).join(", ")+(q.notes?" | "+q.notes:""),
+    checklist:[],quoteId:q.id,docs:{}
+  };
+  db.events.push(e);
+  q.status="converted";q.eventId=e.id;
+  save();toast("Booking created from "+q.no+" — send the deposit invoice next");
+  openModal(e.id);
+}
+
+/* ================= QUOTE BUILDER ================= */
+let qb={id:null,items:[]};
+function qbInitSelects(){
+  qbClient.innerHTML=db.clients.sort((a,b)=>a.name.localeCompare(b.name)).map(c=>`<option value="${c.id}">${esc(c.name)}</option>`).join("")||'<option value="">— add a client first —</option>';
+  if(qb.clientId)qbClient.value=qb.clientId;
+  qbPackage.innerHTML='<option value="">— blank quote —</option>'+db.packages.map(p=>`<option value="${p.id}">${esc(p.name)}</option>`).join("");
+  qbAddSel.innerHTML=db.services.map(s=>`<option value="${s.id}">${esc(s.name)} — ${R(s.price)}</option>`).join("");
+  qbRenderItems();
+}
+function qbNew(clientId){
+  qb={id:null,items:[],clientId:clientId||null};
+  qbType.value="wedding";qbDate.value="";qbVenue.value="";qbPackage.value="";
+  qbDiscount.value=0;qbTravel.value=0;qbDeposit.value=50;qbValid.value=14;qbNotes.value="";
+  go('qb');
+  if(clientId)qbClient.value=clientId;
+  qbCalc();
+}
+function qbEdit(id){
+  const q=db.quotes.find(x=>x.id===id);if(!q)return;
+  qb={id:q.id,items:q.items.map(i=>({...i})),clientId:q.clientId};
+  go('qb');
+  qbClient.value=q.clientId;qbType.value=q.type||"other";
+  qbDate.value=q.eventDate||"";qbVenue.value=q.venue||"";
+  qbDiscount.value=q.discount||0;qbTravel.value=q.travel||0;
+  qbDeposit.value=q.depositPct||50;qbValid.value=q.validDays||14;qbNotes.value=q.notes||"";
+  qbRenderItems();
+}
+function qbLoadPackage(){
+  const p=db.packages.find(x=>x.id===qbPackage.value);
+  if(!p)return;
+  qb.items=p.items.map(([sid,qty])=>{
+    const s=db.services.find(x=>x.id===sid);
+    return s?{name:s.name,qty,price:s.price}:null;
+  }).filter(Boolean);
+  qbRenderItems();
+}
+function qbAddService(){
+  const s=db.services.find(x=>x.id===qbAddSel.value);
+  if(s){qb.items.push({name:s.name,qty:1,price:s.price});qbRenderItems()}
+}
+function qbAddCustom(){qb.items.push({name:"Custom item",qty:1,price:0});qbRenderItems()}
+function qbRenderItems(){
+  qbItems.innerHTML=qb.items.map((i,ix)=>`
+    <div class="qb-item">
+      <input value="${esc(i.name)}" onchange="qb.items[${ix}].name=this.value">
+      <input type="number" value="${i.qty}" min="1" onchange="qb.items[${ix}].qty=Math.max(1,+this.value||1);qbCalc()">
+      <input type="number" value="${i.price}" min="0" step="50" onchange="qb.items[${ix}].price=+this.value||0;qbCalc()">
+      <button type="button" class="del" onclick="qb.items.splice(${ix},1);qbRenderItems()">✕</button>
+    </div>`).join("")||'<div class="empty" style="padding:10px">No items — pick a package above or add services.</div>';
+  qbCalc();
+}
+function qbCalc(){
+  const sub=qb.items.reduce((s,i)=>s+i.qty*i.price,0);
+  const disc=+qbDiscount.value||0,trav=+qbTravel.value||0;
+  const total=Math.max(0,sub-disc+trav);
+  const dep=Math.round(total*(+qbDeposit.value||0)/100);
+  let rows=`<div class="q-line"><span>Subtotal</span><span>${R(sub)}</span></div>`;
+  if(disc)rows+=`<div class="q-line"><span>Discount</span><span>−${R(disc)}</span></div>`;
+  if(trav)rows+=`<div class="q-line"><span>Travel</span><span>${R(trav)}</span></div>`;
+  rows+=`<div class="q-line"><span>Deposit (${+qbDeposit.value||0}%) to secure date</span><span>${R(dep)}</span></div>`;
+  qbBreakdown.innerHTML=rows;
+  qbTotal.textContent=R(total);
+  return {sub,disc,trav,total,dep};
+}
+function qbSave(){
+  if(!qbClient.value){toast("Add a client first (Clients tab → ＋)");return}
+  if(!qb.items.length){toast("Add at least one line item");return}
+  const t=qbCalc();
+  let q=qb.id?db.quotes.find(x=>x.id===qb.id):null;
+  if(!q){
+    db.seq.q++;
+    q={id:uid(),no:"Q"+new Date().getFullYear()+"-"+String(db.seq.q).padStart(3,"0"),status:"draft"};
+    db.quotes.push(q);
+  }
+  const validDays=+qbValid.value||14;
+  const expiry=new Date(Date.now()+validDays*86400000).toISOString().slice(0,10);
+  Object.assign(q,{
+    clientId:qbClient.value,type:qbType.value,eventDate:qbDate.value,venue:qbVenue.value.trim(),
+    items:qb.items.map(i=>({...i})),discount:+qbDiscount.value||0,travel:+qbTravel.value||0,
+    depositPct:+qbDeposit.value||0,validDays,notes:qbNotes.value.trim(),
+    date:q.date||todayStr(),expiry,total:t.total
+  });
+  qb.id=q.id;
+  persist();toast("Saved "+q.no);go('quotes');
+}
+function qbSaveAsPackage(){
+  if(!qb.items.length){toast("No items to save");return}
+  const name=prompt("Name for the new package:");
+  if(!name)return;
+  const items=qb.items.map(i=>{
+    let s=db.services.find(x=>x.name===i.name);
+    if(!s){s={id:uid(),name:i.name,price:i.price};db.services.push(s)}
+    return [s.id,i.qty];
+  });
+  db.packages.push({id:uid(),name:name.trim(),items});
+  persist();toast("Package saved — it's now available in the builder & Services page");
+}
+
+/* ================= EVENT MODAL / CRUD ================= */
+function clientOptions(sel){
+  return db.clients.sort((a,b)=>a.name.localeCompare(b.name)).map(c=>`<option value="${c.id}" ${sel===c.id?"selected":""}>${esc(c.name)}</option>`).join("")+'<option value="__new">＋ New client…</option>';
+}
+function openModal(id){
+  modalBg.classList.add('open');
+  evForm.reset();fId.value="";fDelete.style.display="none";
+  fChecklistWrap.innerHTML="";fDocsWrap.innerHTML="";fPayWrap.innerHTML="";fEquipWrap.innerHTML="";
+  modalTitle.textContent="New Lead";
+  fClient.innerHTML=clientOptions();
+  if(!db.clients.length){toast("Tip: add the client first (Clients tab)");}
+  if(id){
+    const e=db.events.find(x=>x.id===id);if(!e)return;
+    const c=clientOf(e);
+    modalTitle.textContent="Edit — "+c.name;
+    fId.value=e.id;fClient.innerHTML=clientOptions(e.clientId);
+    fType.value=e.type;fStatus.value=e.status;
+    fDate.value=e.date||"";fTime.value=e.time||"";fVenue.value=e.venue||"";
+    fPrice.value=e.price||"";fNotes.value=e.notes||"";
+    fDelete.style.display="block";
+    /* payments */
+    const paid=paidOf(e),bal=Math.max(0,(+e.price||0)-paid);
+    fPayWrap.innerHTML=`<div class="field"><label>Payments — paid ${R(paid)}${(+e.price)?" of "+R(e.price)+(bal?" · owes "+R(bal):" · paid in full ✓"):""}</label>
+      ${(e.payments||[]).map((p,ix)=>`<div class="q-line"><span>${p.date||""} ${p.note?"· "+esc(p.note):""}</span><span>${R(p.amount)} <button type="button" onclick="delPayment('${e.id}',${ix})" style="background:none;border:none;color:#ff7070;cursor:pointer">✕</button></span></div>`).join("")}
+      <div class="rowbtns"><button type="button" class="mini adv" onclick="addPayment('${e.id}')">＋ Record payment</button></div></div>`;
+    /* equipment */
+    if(e.date){
+      const avail=eqAvailableFor(e.date,e.id);
+      const assignedElsewhere=db.equipment.filter(q=>!avail.includes(q)&&!(e.equipment||[]).includes(q.id)&&q.status!=="Retired");
+      if(db.equipment.length){
+        fEquipWrap.innerHTML=`<div class="field"><label>Equipment for this date</label>
+          ${db.equipment.filter(q=>q.status!=="Retired").map(q=>{
+            const mine=(e.equipment||[]).includes(q.id);
+            const free=avail.some(a=>a.id===q.id)||mine;
+            return `<label class="chk" style="${!free?"opacity:.45":""}"><input type="checkbox" ${mine?"checked":""} ${!free?"disabled":""} onchange="tickEquip('${e.id}','${q.id}',this.checked)"><span>${esc(q.name)}${!free?" — ⛔ booked elsewhere":q.status==="Maintenance"?" — 🔧 maintenance":""}</span></label>`;
+          }).join("")}</div>`;
+      }
+    }
+    /* documents */
+    fDocsWrap.innerHTML=`<div class="field"><label>Documents</label>
+      <div class="ev-actions">
+        <button type="button" class="mini call" onclick="genDoc('deposit','${e.id}')">🧾 Deposit Invoice (50%)</button>
+        <button type="button" class="mini ghost" onclick="genDoc('final','${e.id}')">🧾 Final Invoice</button>
+      </div>
+      <p class="sub" style="margin-top:6px;font-size:.72rem">Quotes are built in the Quote Builder (More → Quotes). Save price changes before generating.</p></div>`;
+    /* checklist */
+    if(["deposit","confirmed"].includes(e.status)){
+      if(!e.checklist||!e.checklist.length)e.checklist=buildChecklist(e.type);
+      fChecklistWrap.innerHTML=`<div class="field"><label>Gear checklist (${e.checklist.filter(c=>c.done).length}/${e.checklist.length})</label>`+
+        e.checklist.map((c,i)=>`<label class="chk ${c.done?"done":""}"><input type="checkbox" ${c.done?"checked":""} onchange="tickChk('${e.id}',${i},this.checked)"><span>${c.item}</span></label>`).join("")+`</div>`;
+    }
+  }
+}
+function addPayment(id){
+  const e=db.events.find(x=>x.id===id);if(!e)return;
+  const amt=prompt("Payment amount (R):");
+  if(amt===null||!(+amt))return;
+  e.payments.push({date:todayStr(),amount:+amt,note:""});
+  save();openModal(id);toast(R(+amt)+" recorded");
+}
+function delPayment(id,ix){
+  const e=db.events.find(x=>x.id===id);
+  if(e&&confirm("Remove this payment record?")){e.payments.splice(ix,1);save();openModal(id)}
+}
+function tickEquip(evId,eqId,on){
+  const e=db.events.find(x=>x.id===evId);if(!e)return;
+  e.equipment=e.equipment||[];
+  if(on){
+    const clash=db.events.find(x=>x.id!==evId&&x.date===e.date&&(x.equipment||[]).includes(eqId)&&!["lost","done"].includes(x.status));
+    if(clash){toast("⛔ Already booked on this date");openModal(evId);return}
+    if(!e.equipment.includes(eqId))e.equipment.push(eqId);
+  }else e.equipment=e.equipment.filter(x=>x!==eqId);
+  persist();
+}
+const CHECKLISTS={
+  base:["Main speakers","Subwoofer(s)","Mixer / controller","Laptop + backup USB","All power cables & extensions","Speaker stands","Wireless mic + batteries","Gaffer tape & cable ramps"],
+  wedding:["Ceremony speaker + mic","Lapel mic for officiant","Uplights + colour check","Low-fog machine + fluid","First-dance playlist confirmed","Timeline from planner"],
+  party:["Party lighting rig","Smoke machine + fluid","Requests list from client"],
+  corporate:["Lapel mics","Podium mic","Projector/screen (if booked)","Branding/AV run sheet","Invoice paperwork"],
+  school:["Extra barriers/tape for gear","PG playlist prepared","Contact teacher on arrival"],
+  church:["Lectern/podium mic","Hymn/worship playlist confirmed","Contact coordinator on arrival"],
+  other:[]
+};
+function buildChecklist(type){return[...CHECKLISTS.base,...(CHECKLISTS[type]||[])].map(i=>({item:i,done:false}))}
+function tickChk(id,i,val){const e=db.events.find(x=>x.id===id);if(e&&e.checklist[i]){e.checklist[i].done=val;persist();openModal(id)}}
+function closeModal(){modalBg.classList.remove('open')}
+function saveEvent(ev){
+  ev.preventDefault();
+  if(!fClient.value||fClient.value==="__new"){toast("Choose or create a client first");return false}
+  const id=fId.value||uid();
+  let e=db.events.find(x=>x.id===id);
+  if(!e){e={id,created:todayStr(),checklist:[],payments:[],equipment:[]};db.events.push(e)}
+  Object.assign(e,{clientId:fClient.value,type:fType.value,date:fDate.value,time:fTime.value,venue:fVenue.value.trim(),price:+fPrice.value||0,status:fStatus.value,notes:fNotes.value.trim()});
+  if(["deposit","confirmed"].includes(e.status)&&(!e.checklist||!e.checklist.length))e.checklist=buildChecklist(e.type);
+  save();closeModal();toast("Saved — "+clientOf(e).name);
+  return false;
+}
+function deleteEvent(){
+  const id=fId.value,e=db.events.find(x=>x.id===id);
+  if(e&&confirm("Delete this booking for "+clientOf(e).name+"? This cannot be undone.")){db.events=db.events.filter(x=>x.id!==id);save();closeModal();toast("Deleted")}
+}
+
+/* ================= DOCUMENTS ================= */
+const BIZKEY="v8office_biz";
+function bizGet(){try{return JSON.parse(localStorage.getItem(BIZKEY))||{}}catch(e){return{}}}
+function bizLoad(){const b=bizGet();bizBank.value=b.bank||"";bizVat.value=b.vat||""}
+function bizSave(){localStorage.setItem(BIZKEY,JSON.stringify({bank:bizBank.value.trim(),vat:bizVat.value.trim()}));toast("Invoice details saved")}
+function docShell(title,no,clientHtml,eventHtml,venueHtml,tableHtml,summary,terms){
+  const biz=bizGet();
+  const today=new Date().toLocaleDateString("en-ZA",{day:"numeric",month:"long",year:"numeric"});
+  const logoUrl=new URL("logo.png",location.href).href;
+  const bank=esc(biz.bank||"EFT / cash — WhatsApp us on 083 229 0642 for banking details.");
+  return '<!DOCTYPE html><html><head><meta charset="utf-8"><title>'+title+' '+no+' — V8 Sound Machine</title><style>'
+    +'body{font-family:Segoe UI,Arial,sans-serif;color:#1c1c22;margin:0;background:#f4f4f6}'
+    +'.page{max-width:760px;margin:20px auto;background:#fff;padding:40px;box-shadow:0 2px 14px rgba(0,0,0,.08)}'
+    +'.head{display:flex;justify-content:space-between;align-items:center;border-bottom:3px solid #ff2da4;padding-bottom:18px;gap:16px}'
+    +'.head img{height:90px;background:#0a0a0a;border-radius:10px;padding:6px}'
+    +'.head .co{text-align:right;font-size:.85rem;line-height:1.5}.head .co b{font-size:1.05rem}'
+    +'h1{font-size:1.4rem;letter-spacing:.08em;margin:26px 0 4px;color:#ff2da4}'
+    +'.meta{font-size:.85rem;color:#555;margin-bottom:22px}'
+    +'.grid{display:flex;flex-wrap:wrap;gap:30px;margin-bottom:22px;font-size:.9rem}'
+    +'.grid b{display:block;font-size:.72rem;text-transform:uppercase;letter-spacing:.06em;color:#888;margin-bottom:3px}'
+    +'table{width:100%;border-collapse:collapse;font-size:.92rem;margin-bottom:8px}'
+    +'th{text-align:left;font-size:.72rem;text-transform:uppercase;letter-spacing:.06em;color:#888;border-bottom:2px solid #e5e5ea;padding:8px 6px}'
+    +'td{padding:10px 6px;border-bottom:1px solid #eee}td:last-child,th:last-child{text-align:right;white-space:nowrap}'
+    +'.sumtable td{border:none;padding:6px}'
+    +'.hl td{font-weight:700;font-size:1.05rem;color:#ff2da4;border-top:2px solid #1c1c22}'
+    +'.terms{font-size:.8rem;color:#555;margin-top:20px;line-height:1.6}'
+    +'.bank{margin-top:16px;padding:14px;background:#f4f4f6;border-radius:8px;font-size:.85rem;white-space:pre-line}'
+    +'.foot{margin-top:26px;font-size:.78rem;color:#999;text-align:center}'
+    +'.no-print{display:block;margin:18px auto;background:linear-gradient(120deg,#ff2da4,#8b3dff);color:#fff;border:none;border-radius:8px;padding:12px 26px;font-weight:700;cursor:pointer;font-size:1rem}'
+    +'@media print{body{background:#fff}.page{box-shadow:none;margin:0;padding:10px}.no-print{display:none}}'
+    +'</style></head><body><div class="page">'
+    +'<div class="head"><img src="'+logoUrl+'" alt="V8 Sound Machine">'
+    +'<div class="co"><b>V8 SOUND MACHINE</b><br>Event Sound &amp; Entertainment<br>Wellington, Western Cape<br>083 229 0642 · info@v8soundmachine.co.za'+(biz.vat?'<br>'+esc(biz.vat):'')+'</div></div>'
+    +'<h1>'+title+'</h1><div class="meta">'+no+' · Issued '+today+'</div>'
+    +'<div class="grid"><div><b>Client</b>'+clientHtml+'</div><div><b>Event</b>'+eventHtml+'</div><div><b>Venue</b>'+venueHtml+'</div></div>'
+    +tableHtml
+    +'<table class="sumtable">'+summary+'</table>'
+    +'<div class="bank"><b>Payment details</b>\n'+bank+'\nReference: '+no+'</div>'
+    +'<div class="terms">'+terms+'</div>'
+    +'<div class="foot">V8 Sound Machine — Power Your Event · v8soundmachine.netlify.app</div>'
+    +'<button class="no-print" onclick="window.print()">🖨 Print / Save as PDF</button>'
+    +'</div></body></html>';
+}
+function openDoc(html){
+  const w=window.open("","_blank");
+  if(!w){toast("Allow pop-ups to open the document");return}
+  w.document.write(html);w.document.close();
+}
+function genQuoteDoc(id){
+  const q=db.quotes.find(x=>x.id===id);if(!q)return;
+  const c=db.clients.find(x=>x.id===q.clientId)||{name:"?",phone:""};
+  const dep=Math.round(q.total*(q.depositPct||50)/100);
+  const rows=q.items.map(i=>'<tr><td>'+esc(i.name)+(i.qty>1?' × '+i.qty:'')+'</td><td>'+R(i.qty*i.price)+'</td></tr>').join("");
+  const table='<table><tr><th>Description</th><th>Amount</th></tr>'+rows
+    +(q.discount?'<tr><td>Discount</td><td>−'+R(q.discount)+'</td></tr>':'')
+    +(q.travel?'<tr><td>Travel</td><td>'+R(q.travel)+'</td></tr>':'')
+    +(q.notes?'<tr><td colspan="2" style="color:#888;font-size:.8rem">'+esc(q.notes)+'</td></tr>':'')
+    +'</table>';
+  const summary='<tr class="hl"><td>Total</td><td>'+R(q.total)+'</td></tr><tr><td>'+(q.depositPct||50)+'% deposit to secure your date</td><td>'+R(dep)+'</td></tr>';
+  const terms='This quotation is valid until '+(q.expiry||"14 days from issue")+'. A '+(q.depositPct||50)+'% deposit secures your date; the balance is due 7 days before the event. Professional setup, sound check and pack-down are included.';
+  openDoc(docShell("QUOTATION",q.no,esc(c.name)+'<br>'+esc(c.phone||""),(TYPE_NAME[q.type]||"Event")+'<br>'+(q.eventDate?fmtDate(q.eventDate):"To be confirmed"),esc(q.venue||"To be confirmed"),table,summary,terms));
+}
+function genDoc(type,id){
+  const e=db.events.find(x=>x.id===id);if(!e)return;
+  if(!(+e.price)){toast("Add a quoted price first, then save");return}
+  if(!e.docs)e.docs={};
+  let no=e.docs[type];
+  if(!no){db.seq.i++;no="INV"+new Date().getFullYear()+"-"+String(db.seq.i).padStart(3,"0");e.docs[type]=no;persist()}
+  const c=clientOf(e);
+  const total=+e.price||0,paid=paidOf(e),dep=Math.round(total/2),bal=Math.max(0,total-paid);
+  let title,item,summary,terms;
+  const evDate=e.date?fmtDate(e.date):"To be confirmed";
+  if(type==="deposit"){
+    title="DEPOSIT INVOICE";
+    item="50% booking deposit — "+(TYPE_NAME[e.type]||"Event")+" on "+evDate;
+    summary='<tr><td>Package total</td><td>'+R(total)+'</td></tr><tr class="hl"><td>Deposit due now</td><td>'+R(dep)+'</td></tr><tr><td>Balance (due 7 days before the event)</td><td>'+R(total-dep)+'</td></tr>';
+    terms="Your date is confirmed as soon as the deposit reflects. Please use the payment reference above.";
+  }else{
+    title="FINAL INVOICE";
+    item="Final balance — "+(TYPE_NAME[e.type]||"Event")+" on "+evDate;
+    summary='<tr><td>Package total</td><td>'+R(total)+'</td></tr><tr><td>Paid to date</td><td>'+R(paid)+'</td></tr><tr class="hl"><td>Balance due</td><td>'+R(bal)+'</td></tr>';
+    terms="The balance is due 7 days before your event. Thank you for choosing V8 Sound Machine — we can't wait to power your event!";
+  }
+  const table='<table><tr><th>Description</th><th>Amount</th></tr><tr><td>'+esc(item)+(e.notes?'<br><span style="color:#888;font-size:.8rem">'+esc(e.notes)+'</span>':'')+'</td><td>'+R(type==="deposit"?dep:bal)+'</td></tr></table>';
+  openDoc(docShell(title,no,esc(c.name)+'<br>'+esc(c.phone||""),(TYPE_NAME[e.type]||"Event")+'<br>'+evDate+(e.time?' · '+esc(e.time):''),esc(e.venue||"To be confirmed"),table,summary,terms));
+}
+
+/* ================= BACKUP ================= */
+function exportData(){
+  const blob=new Blob([JSON.stringify(db,null,2)],{type:"application/json"});
+  const a=document.createElement("a");
+  a.href=URL.createObjectURL(blob);
+  a.download="v8-office-backup-"+todayStr()+".json";
+  a.click();toast("Backup downloaded");
+}
+function importData(ev){
+  const f=ev.target.files[0];if(!f)return;
+  const r=new FileReader();
+  r.onload=()=>{try{const d=JSON.parse(r.result);if(!Array.isArray(d.events))throw 0;db=d;migrate();save();toast("Backup restored")}catch(e){toast("That file doesn't look like a V8 backup")}};
+  r.readAsText(f);
+}
+function wipeData(){if(confirm("Delete ALL app data? Export a backup first!")&&confirm("Really sure?")){db={};migrate();save();toast("All data deleted")}}
+
+/* ================= CLOUD SYNC ================= */
+const CLOUD_URL="https://pevjvssiwyduholytsnj.supabase.co";
+const CLOUD_KEY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBldmp2c3Npd3lkdWhvbHl0c25qIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODMzMjIwMTcsImV4cCI6MjA5ODg5ODAxN30.zXx7WoayW4xZbYjjW_Lp_Q6x5T5WO3Bk8yWPVFTKlAY";
+const CKEY="v8office_cloud";
+let cloud=(()=>{try{return JSON.parse(localStorage.getItem(CKEY))||null}catch(e){return null}})();
+if(cloud){cloud.url=CLOUD_URL;cloud.key=CLOUD_KEY}
+function cloudUI(){
+  const on=!!cloud;
+  document.getElementById('syncBtn').style.display=on?"block":"none";
+  const st=document.getElementById('cloudStatus');
+  st.textContent=on?"On":"Off";
+  st.className="pill "+(on?"confirmed":"new");
+  if(cloud){cEmail.value=cloud.email;cPass.value=cloud.pass}
+}
+function cloudConnect(){
+  const email=cEmail.value.trim(),pass=cPass.value;
+  if(!email||!pass){toast("Enter your email and password");return}
+  cloud={url:CLOUD_URL,key:CLOUD_KEY,email,pass};
+  localStorage.setItem(CKEY,JSON.stringify(cloud));
+  cloudUI();cloudSync(true);
+}
+function cloudDisconnect(){
+  localStorage.removeItem(CKEY);cloud=null;
+  cEmail.value=cPass.value="";
+  cloudUI();toast("Signed out of cloud sync");
+}
+async function cloudLogin(){
+  const r=await fetch(cloud.url+"/auth/v1/token?grant_type=password",{
+    method:"POST",
+    headers:{"apikey":cloud.key,"Content-Type":"application/json"},
+    body:JSON.stringify({email:cloud.email,password:cloud.pass})
+  });
+  if(!r.ok)throw new Error("login");
+  return (await r.json()).access_token;
+}
+async function cloudSync(manual){
+  if(!cloud)return;
+  try{
+    const token=await cloudLogin();
+    const h={"apikey":cloud.key,"Authorization":"Bearer "+token,"Content-Type":"application/json"};
+    const r=await fetch(cloud.url+"/rest/v1/enquiries?status=eq.new&order=created_at.asc",{headers:h});
+    if(!r.ok)throw new Error("fetch");
+    const rows=await r.json();
+    let added=0;
+    for(const q of rows){
+      /* find or create client */
+      let c=null;
+      if(q.phone)c=db.clients.find(x=>x.phone.replace(/\D/g,"")===String(q.phone).replace(/\D/g,""));
+      if(!c&&q.name)c=db.clients.find(x=>x.name.toLowerCase()===String(q.name).toLowerCase());
+      if(!c){
+        c={id:uid(),name:q.name||"Website enquiry",phone:q.phone||"",email:q.email||"",company:"",address:"",notes:"Created from website enquiry",created:todayStr()};
+        db.clients.push(c);
+      }else if(q.email&&!c.email){c.email=q.email}
+      db.events.push({
+        id:uid(),created:todayStr(),clientId:c.id,checklist:[],payments:[],equipment:[],
+        type:["wedding","party","corporate","school","church"].includes(q.event_type)?q.event_type:"other",
+        date:q.event_date||"",time:"",venue:q.venue||"",
+        price:+q.estimate||0,status:"new",
+        notes:[
+          q.package?"Package: "+q.package:"",
+          q.guests?q.guests+" guests":"",
+          q.hours?q.hours+"h":"",
+          q.notes||"",
+          "(from website — "+(q.source||"booking")+")"
+        ].filter(Boolean).join(" | ")
+      });
+      added++;
+      await fetch(cloud.url+"/rest/v1/enquiries?id=eq."+q.id,{
+        method:"PATCH",headers:{...h,"Prefer":"return=minimal"},
+        body:JSON.stringify({status:"imported"})
+      });
+    }
+    if(added){save();toast("⚡ "+added+" new lead"+(added>1?"s":"")+" from the website")}
+    else if(manual)toast("Up to date — no new leads");
+  }catch(e){
+    if(manual)toast(e.message==="login"?"Login failed — check email/password":"Sync failed — check internet");
+  }
+}
+
+/* ================= PIN LOCK ================= */
+const PKEY="v8office_pin";
+let pinMode="unlock";
+function pinHash(s){let h=5381;for(let i=0;i<s.length;i++)h=((h<<5)+h+s.charCodeAt(i))|0;return "h"+(h>>>0).toString(36)+s.length}
+function showLock(){
+  const lock=document.getElementById('lockScreen');
+  if(sessionStorage.getItem('v8unlocked')==="1"){lock.classList.add('hidden');return}
+  lock.classList.remove('hidden');
+  if(!localStorage.getItem(PKEY)){
+    pinMode="create";
+    lockTitle.textContent="Create a PIN";
+    pinConfirm.style.display="block";
+    lockMsg.textContent="Choose a 4–8 digit PIN to protect this app on your device.";
+  }else{
+    pinMode="unlock";
+    lockTitle.textContent="Enter PIN";
+    pinConfirm.style.display="none";
+    lockMsg.textContent="This PIN protects the app on this device.";
+  }
+  setTimeout(()=>pinInput.focus(),150);
+}
+function pinSubmit(){
+  const v=pinInput.value.trim();
+  if(v.length<4){lockMsg.textContent="PIN must be at least 4 digits.";return}
+  if(pinMode==="create"){
+    if(v!==pinConfirm.value.trim()){lockMsg.textContent="PINs don't match — try again.";return}
+    localStorage.setItem(PKEY,pinHash(v));unlockApp();
+  }else{
+    if(pinHash(v)===localStorage.getItem(PKEY))unlockApp();
+    else{lockMsg.textContent="Wrong PIN — try again.";pinInput.value=""}
+  }
+}
+function unlockApp(){
+  sessionStorage.setItem('v8unlocked','1');
+  document.getElementById('lockScreen').classList.add('hidden');
+  pinInput.value=pinConfirm.value="";
+}
+function changePin(){
+  const cur=prompt("Enter your current PIN:");
+  if(cur===null)return;
+  if(pinHash(cur.trim())!==localStorage.getItem(PKEY)){toast("Wrong PIN");return}
+  const nw=prompt("New PIN (4–8 digits):");
+  if(nw===null||nw.trim().length<4){toast("PIN not changed");return}
+  localStorage.setItem(PKEY,pinHash(nw.trim()));toast("PIN updated");
+}
+pinInput.addEventListener('keydown',e=>{if(e.key==='Enter')pinSubmit()});
+pinConfirm.addEventListener('keydown',e=>{if(e.key==='Enter')pinSubmit()});
+
+/* ================= THEME ================= */
+const ICON_SUN='<svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4.2"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>';
+const ICON_MOON='<svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>';
+function applyTheme(t){
+  document.body.classList.toggle('light',t==='light');
+  document.getElementById('themeBtn').innerHTML=t==='light'?ICON_MOON:ICON_SUN;
+}
+function toggleTheme(){
+  const t=document.body.classList.contains('light')?'dark':'light';
+  localStorage.setItem('v8theme',t);applyTheme(t);
+}
+
+/* ================= INIT ================= */
+function renderAll(){renderDash();renderPipe();renderCal();if(currentView==='clients')renderClients()}
+migrate();
+topDate.textContent=new Date().toLocaleDateString("en-ZA",{weekday:"long",day:"numeric",month:"long"});
+applyTheme(localStorage.getItem('v8theme')||'dark');
+showLock();
+bizLoad();
+renderAll();cloudUI();cloudSync(false);
+if("serviceWorker" in navigator&&location.protocol!=="file:")navigator.serviceWorker.register("sw.js");
+</script>
+</body>
+</html>

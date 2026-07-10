@@ -1,0 +1,1462 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>V8 Sound Machine | Event Sound & Entertainment — Wellington, Western Cape</title>
+<meta name="description" content="V8 Sound Machine — professional event sound, lighting and entertainment for weddings, corporate functions, schools, churches, birthdays and private events. Serving a 200 km radius of Wellington, Western Cape. Get an instant quote.">
+<meta name="keywords" content="event sound hire Western Cape, sound system hire Wellington, wedding sound, wedding ceremony audio, event lighting, corporate event sound, DJ services, MC support">
+<meta property="og:title" content="V8 Sound Machine | Event Sound & Entertainment">
+<meta property="og:description" content="Complete event sound, lighting and entertainment solutions for weddings, corporate events, schools, churches and private functions across the Western Cape.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://v8sm.co.za/">
+<meta property="og:image" content="https://v8sm.co.za/logo.png">
+<meta property="og:locale" content="en_ZA">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="V8 Sound Machine | Event Sound & Entertainment">
+<meta name="twitter:description" content="Complete event sound, lighting and entertainment solutions for weddings, corporate events, schools, churches and private functions across the Western Cape.">
+<meta name="twitter:image" content="https://v8sm.co.za/logo.png">
+<meta name="robots" content="index, follow">
+<meta name="geo.region" content="ZA-WC">
+<meta name="geo.placename" content="Wellington, Western Cape">
+<meta name="geo.position" content="-33.6392;19.0112">
+<meta name="ICBM" content="-33.6392, 19.0112">
+<meta name="theme-color" content="#0a0a0a">
+<link rel="canonical" href="https://v8sm.co.za/">
+<link rel="icon" type="image/png" href="logo.png">
+<link rel="apple-touch-icon" href="logo.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+<script defer src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/lenis@1.1.14/dist/lenis.min.js"></script>
+<style>
+:root{
+  --black:#0a0a0a;
+  --dark:#131313;
+  --card:#1a1a1a;
+  --card2:#202020;
+  --red:#ff2da4;          /* logo magenta (kept var name) */
+  --red-dark:#b3126f;
+  --purple:#8b3dff;
+  --blue:#27a6ff;
+  --grad:linear-gradient(120deg,#ff2da4,#8b3dff 55%,#27a6ff);
+  --chrome-1:#f5f5f5;
+  --chrome-2:#b8bcc2;
+  --chrome-3:#6e747c;
+  --text:#eaeaea;
+  --muted:#9a9a9a;
+  --line:#2a2a2a;
+  --radius:14px;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{background:var(--black);color:var(--text);font-family:'Space Grotesk',system-ui,sans-serif;line-height:1.6;letter-spacing:-.005em;overflow-x:hidden}
+h1,h2,h3,h4{font-family:'Oswald',sans-serif;text-transform:uppercase;letter-spacing:.04em;line-height:1.15;text-wrap:balance}
+.hero p,.section-sub,.svc p,.testi p{text-wrap:pretty}
+img{max-width:100%;display:block}
+a{color:inherit;text-decoration:none}
+button{font-family:inherit;cursor:pointer}
+.container{width:min(1140px,92%);margin:0 auto}
+section{padding:72px 0}
+.section-tag{color:var(--red);font-weight:700;font-size:.8rem;letter-spacing:.25em;text-transform:uppercase;display:block;margin-bottom:10px}
+.section-title{font-size:clamp(1.7rem,4.5vw,2.6rem);margin-bottom:14px}
+.section-sub{color:var(--muted);max-width:620px;margin-bottom:40px}
+.chrome-text{background:linear-gradient(180deg,var(--chrome-1) 0%,var(--chrome-2) 45%,var(--chrome-3) 55%,var(--chrome-1) 100%);-webkit-background-clip:text;background-clip:text;color:transparent}
+.grille{height:4px;width:64px;background:var(--grad);-webkit-mask:repeating-linear-gradient(90deg,#000 0 8px,transparent 8px 14px);mask:repeating-linear-gradient(90deg,#000 0 8px,transparent 8px 14px);margin-bottom:22px;border-radius:2px}
+
+/* ---------- Buttons ---------- */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:14px 28px;border-radius:8px;font-weight:700;font-size:.95rem;letter-spacing:.03em;border:none;transition:transform .15s,box-shadow .15s,background .15s}
+.btn:active{transform:scale(.97)}
+.btn-red{background:linear-gradient(120deg,#ff2da4,#8b3dff);color:#fff;box-shadow:0 4px 18px rgba(255,45,164,.35)}
+.btn-red:hover{box-shadow:0 6px 26px rgba(139,61,255,.55)}
+.btn-ghost{background:transparent;color:var(--text);border:1px solid var(--chrome-3)}
+.btn-ghost:hover{border-color:var(--chrome-1);color:#fff}
+.btn-block{width:100%}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+
+/* ---------- Icons ---------- */
+.icon{width:24px;height:24px;flex-shrink:0;stroke:currentColor;stroke-width:1.75;stroke-linecap:round;stroke-linejoin:round;fill:none}
+.icon-fill{fill:currentColor;stroke:none}
+.btn .icon{width:18px;height:18px}
+
+/* ---------- Accessibility & interaction ---------- */
+a,button,input,select,textarea,label,summary{touch-action:manipulation;-webkit-tap-highlight-color:transparent}
+:focus-visible{outline:2px solid var(--blue);outline-offset:2px;border-radius:6px}
+.btn:focus-visible,.fab:focus-visible{outline-offset:3px}
+
+/* ---------- Nav ---------- */
+nav{position:fixed;top:0;left:0;right:0;z-index:200;background:rgba(10,10,10,.92);backdrop-filter:blur(12px);border-bottom:1px solid var(--line);transition:background .3s ease,box-shadow .3s ease}
+.nav-inner{display:flex;align-items:center;justify-content:space-between;height:66px;transition:height .3s ease}
+.nav-logo{display:flex;align-items:center;gap:10px;font-family:'Oswald',sans-serif;font-weight:700;font-size:1.15rem;text-transform:uppercase;letter-spacing:.06em}
+.nav-logo img{height:52px;width:auto}
+.nav-logo .v8{color:var(--red)}
+.nav-links{display:flex;gap:clamp(14px,2vw,26px);list-style:none;font-size:.88rem;font-weight:600;white-space:nowrap}
+.nav-links a{position:relative;color:var(--muted);transition:color .15s}
+.nav-links a:hover{color:#fff}
+.nav-right{display:flex;align-items:center;gap:12px}
+.lang-toggle{display:flex;flex-shrink:0;border:1px solid var(--line);border-radius:6px;overflow:hidden;font-size:.75rem;font-weight:700}
+.lang-toggle button{background:transparent;color:var(--muted);padding:6px 12px;border:none;min-height:40px}
+.lang-toggle button.active{background:var(--red);color:#fff}
+.nav-cta{padding:10px 18px;font-size:.82rem}
+.burger{display:none;background:none;border:none;flex-direction:column;align-items:center;justify-content:center;gap:5px;min-width:44px;min-height:44px}
+.burger span{width:24px;height:2px;background:#fff;border-radius:2px;transition:.2s}
+.mobile-menu{display:none;position:fixed;top:66px;left:0;right:0;background:rgba(10,10,10,.98);z-index:190;border-bottom:1px solid var(--line);padding:18px 4%}
+.mobile-menu.open{display:block}
+.mobile-menu a{display:block;padding:13px 4px;font-weight:600;color:var(--text);border-bottom:1px solid var(--line)}
+@media(max-width:1020px){
+  .nav-links{display:none}
+  .burger{display:flex}
+  .nav-cta{display:none}
+}
+
+/* ---------- Hero ---------- */
+.hero{position:relative;min-height:100svh;display:flex;align-items:center;padding:120px 0 90px;overflow:hidden;background:
+  radial-gradient(120% 78% at 50% -12%,rgba(255,45,164,.20),transparent 52%),
+  radial-gradient(90% 55% at 50% 116%,rgba(139,61,255,.16),transparent 60%),
+  linear-gradient(180deg,#0b0b0d,#070708)}
+/* fine mixing-desk fader grid, concentrated toward the emblem then dissolving */
+.hero::before{content:"";position:absolute;inset:0;pointer-events:none;
+  background-image:repeating-linear-gradient(90deg,rgba(255,255,255,.03) 0 1px,transparent 1px 46px);
+  -webkit-mask:radial-gradient(80% 60% at 50% 34%,#000 0%,transparent 72%);
+  mask:radial-gradient(80% 60% at 50% 34%,#000 0%,transparent 72%)}
+/* stage vignette so the light reads as intentional, not ambient */
+.hero::after{content:"";position:absolute;inset:0;pointer-events:none;
+  background:radial-gradient(115% 90% at 50% 38%,transparent 54%,rgba(0,0,0,.5) 100%)}
+.hero-inner{position:relative;z-index:2;text-align:center;display:flex;flex-direction:column;align-items:center}
+.logo-wrap{position:relative;margin-bottom:26px;display:flex;align-items:center;justify-content:center}
+.logo-wrap::before{content:"";position:absolute;width:130%;height:130%;background:
+  radial-gradient(ellipse 50% 50% at 35% 45%,rgba(255,45,164,.28),transparent 70%),
+  radial-gradient(ellipse 50% 50% at 65% 45%,rgba(39,166,255,.24),transparent 70%);
+  filter:blur(30px);z-index:0;animation:glowpulse 4s ease-in-out infinite alternate}
+@keyframes glowpulse{from{opacity:.7;transform:scale(.96)}to{opacity:1;transform:scale(1.04)}}
+.hero-logo{position:relative;z-index:1;height:min(340px,68vw);width:auto}
+.hero-textlogo{display:none;flex-direction:column;align-items:center;margin-bottom:26px}
+.hero-textlogo .big{font-family:'Oswald',sans-serif;font-size:clamp(3rem,10vw,5.2rem);font-weight:700;line-height:1}
+.hero-textlogo .big em{font-style:normal;color:var(--red)}
+.hero-textlogo .small{font-family:'Oswald',sans-serif;letter-spacing:.5em;font-size:clamp(.8rem,2.4vw,1.15rem);color:var(--chrome-2);margin-top:6px;text-transform:uppercase}
+.hero h1{font-size:clamp(1.5rem,4.5vw,2.5rem);margin-bottom:14px;max-width:760px}
+.hero p{color:var(--muted);max-width:560px;margin-bottom:32px;font-size:1.02rem}
+.hero-ctas{display:flex;gap:14px;flex-wrap:wrap;justify-content:center}
+.eq{display:flex;gap:5px;align-items:flex-end;height:36px;margin-top:48px}
+.eq span{width:6px;background:linear-gradient(180deg,var(--blue),var(--purple),var(--red));border-radius:3px;animation:eq 1s ease-in-out infinite alternate}
+.eq span:nth-child(2){animation-delay:.12s}
+.eq span:nth-child(3){animation-delay:.24s}
+.eq span:nth-child(4){animation-delay:.36s}
+.eq span:nth-child(5){animation-delay:.48s}
+.eq span:nth-child(6){animation-delay:.6s}
+.eq span:nth-child(7){animation-delay:.72s}
+@keyframes eq{from{height:20%}to{height:100%}}
+
+/* ---------- Stats ---------- */
+.stats{background:var(--dark);border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:38px 0}
+.stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:20px;text-align:center}
+.stat b{font-family:'Oswald',sans-serif;font-size:clamp(1.6rem,4vw,2.4rem);display:block}
+.stat span{color:var(--muted);font-size:.82rem;text-transform:uppercase;letter-spacing:.08em}
+@media(max-width:700px){.stats-grid{grid-template-columns:repeat(2,1fr);gap:26px 12px}}
+
+/* ---------- Services ---------- */
+.services-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:18px}
+.svc{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:26px 22px;transition:transform .18s,border-color .18s}
+.svc:hover{transform:translateY(-4px);border-color:var(--red)}
+.svc .ico{display:inline-flex;align-items:center;justify-content:center;width:48px;height:48px;border-radius:12px;margin-bottom:16px;background:linear-gradient(135deg,rgba(255,45,164,.16),rgba(39,166,255,.12));border:1px solid var(--line);color:#fff;transition:border-color .18s,transform .18s}
+.svc:hover .ico{border-color:var(--red);transform:scale(1.06)}
+.svc .ico .icon{width:24px;height:24px}
+.svc h3{font-size:1.05rem;margin-bottom:8px}
+.svc p{color:var(--muted);font-size:.9rem}
+
+/* ---------- Pricing ---------- */
+#pricing{background:var(--dark)}
+.pricing-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:18px;align-items:stretch}
+.plan{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:28px 24px;display:flex;flex-direction:column;position:relative}
+.plan.featured{border-color:var(--red);box-shadow:inset 0 1px 0 rgba(255,255,255,.06),0 0 44px rgba(255,45,164,.22),0 18px 40px -28px rgba(0,0,0,.9)}
+.plan .badge{position:absolute;top:-12px;left:50%;transform:translateX(-50%);background:var(--red);color:#fff;font-size:.68rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;padding:4px 12px;border-radius:20px}
+.plan h3{font-size:1.1rem;margin-bottom:4px}
+.plan .for{color:var(--muted);font-size:.8rem;margin-bottom:16px}
+.plan .price{font-family:'Oswald',sans-serif;font-size:2rem;margin-bottom:2px}
+.plan .price small{font-size:.85rem;color:var(--muted);font-family:'Space Grotesk',sans-serif}
+.plan ul{list-style:none;margin:18px 0 22px;flex:1}
+.plan li{font-size:.88rem;color:#cfcfcf;padding:6px 0;border-bottom:1px dashed var(--line)}
+.plan li::before{content:"— ";color:var(--red);font-weight:700}
+.addons{margin-top:34px;background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:24px}
+.addons h3{margin-bottom:14px;font-size:1rem}
+.addons-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:8px 24px;font-size:.88rem;color:#cfcfcf}
+.addons-grid div b{color:#fff;float:right}
+
+/* ---------- Quote ---------- */
+.quote-wrap{display:grid;grid-template-columns:1.1fr .9fr;gap:26px;align-items:start}
+.quote-form,.quote-result{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:28px}
+.quote-result{position:sticky;top:90px;border-color:var(--red)}
+.field{margin-bottom:18px}
+.field label{display:block;font-size:.8rem;font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin-bottom:7px}
+.field input,.field select,.field textarea{width:100%;background:var(--card2);border:1px solid var(--line);border-radius:8px;color:#fff;padding:12px 14px;font-size:.95rem;font-family:inherit}
+.field input:focus,.field select:focus,.field textarea:focus{outline:none;border-color:var(--red)}
+.field ::placeholder,textarea::placeholder,input::placeholder{color:var(--muted);opacity:1}
+.field input[type=range]{padding:0;accent-color:var(--red)}
+.range-val{font-family:'Oswald',sans-serif;font-size:1.1rem;color:var(--red)}
+.checks{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.checks label{display:flex;align-items:center;gap:8px;font-size:.86rem;color:#cfcfcf;background:var(--card2);border:1px solid var(--line);border-radius:8px;padding:10px 12px;cursor:pointer;text-transform:none;letter-spacing:0}
+.checks input{accent-color:var(--red);width:auto}
+.q-line{display:flex;justify-content:space-between;font-size:.9rem;padding:8px 0;border-bottom:1px dashed var(--line);color:#cfcfcf}
+.q-total{display:flex;justify-content:space-between;font-family:'Oswald',sans-serif;font-size:1.5rem;padding-top:16px}
+.q-note{font-size:.78rem;color:var(--muted);margin:10px 0 18px}
+@media(max-width:860px){.quote-wrap{grid-template-columns:1fr}.quote-result{position:static}}
+
+/* ---------- Gallery ---------- */
+#gallery{background:var(--dark)}
+.filters{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:26px}
+.filters button{background:var(--card);border:1px solid var(--line);color:var(--muted);padding:8px 18px;border-radius:20px;font-size:.85rem;font-weight:600;min-height:44px}
+.filters button.active{background:var(--red);border-color:var(--red);color:#fff}
+.gallery-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:14px}
+.tile{aspect-ratio:4/3;border-radius:10px;border:1px solid var(--line);display:flex;align-items:flex-end;padding:14px;font-size:.82rem;font-weight:600;color:#fff;background:
+  radial-gradient(circle at 30% 20%,rgba(255,45,164,.3),transparent 60%),
+  radial-gradient(circle at 75% 80%,rgba(39,166,255,.2),transparent 60%),
+  linear-gradient(160deg,#232323,#141414);position:relative;overflow:hidden}
+.tile img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transition:transform .3s}
+.tile:hover img{transform:scale(1.05)}
+.tile span{position:relative;z-index:2}
+.tile::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,transparent 45%,rgba(0,0,0,.8));z-index:1}
+
+/* ---------- Testimonials ---------- */
+.testi-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(270px,1fr));gap:18px}
+.testi{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:24px}
+.stars{color:#ffb400;letter-spacing:2px;margin-bottom:10px}
+.testi p{font-size:.92rem;color:#cfcfcf;margin-bottom:16px}
+.testi .who{display:flex;align-items:center;gap:12px}
+.testi .avatar{width:42px;height:42px;border-radius:50%;background:linear-gradient(160deg,var(--red),var(--red-dark));display:flex;align-items:center;justify-content:center;font-weight:700;color:#fff}
+.testi .who b{display:block;font-size:.9rem}
+.testi .who span{font-size:.78rem;color:var(--muted)}
+
+/* ---------- FAQ ---------- */
+#faq{background:var(--dark)}
+.faq-item{border:1px solid var(--line);border-radius:10px;margin-bottom:10px;background:var(--card);overflow:hidden}
+.faq-q{width:100%;background:none;border:none;color:#fff;text-align:left;padding:18px 20px;font-size:.95rem;font-weight:600;display:flex;justify-content:space-between;align-items:center;gap:12px}
+.faq-q::after{content:"+";color:var(--red);font-size:1.4rem;font-weight:400;transition:transform .2s}
+.faq-item.open .faq-q::after{transform:rotate(45deg)}
+.faq-a{max-height:0;overflow:hidden;transition:max-height .25s ease;color:var(--muted);font-size:.9rem}
+.faq-item.open .faq-a{max-height:280px}
+.faq-a div{padding:0 20px 18px}
+
+/* ---------- Booking / Contact ---------- */
+.book-grid{display:grid;grid-template-columns:1fr 1fr;gap:26px}
+@media(max-width:860px){.book-grid{grid-template-columns:1fr}}
+.panel{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:28px}
+.contact-rows{display:flex;flex-direction:column;gap:14px;margin:20px 0}
+.crow{display:flex;align-items:center;gap:14px;background:var(--card2);border:1px solid var(--line);border-radius:10px;padding:14px 16px;font-size:.92rem;transition:border-color .15s}
+a.crow:hover{border-color:var(--red)}
+.crow .ci{display:inline-flex;align-items:center;justify-content:center;width:38px;height:38px;border-radius:9px;background:rgba(255,45,164,.12);color:var(--red);flex-shrink:0}
+.crow .ci .icon{width:20px;height:20px}
+.crow b{display:block;font-size:.78rem;text-transform:uppercase;letter-spacing:.08em;color:var(--muted)}
+#covMap{height:280px;border:1px solid var(--line);border-radius:10px;margin-top:8px;position:relative;z-index:0;background:var(--card2)}
+.socials{display:flex;gap:10px;margin-top:18px}
+.socials a{width:42px;height:42px;border-radius:10px;border:1px solid var(--line);display:flex;align-items:center;justify-content:center;color:var(--muted);transition:border-color .15s,transform .15s,color .15s}
+.socials a:hover{border-color:var(--red);color:#fff;transform:translateY(-2px)}
+.socials a .icon{width:20px;height:20px}
+
+/* ---------- Footer ---------- */
+footer{border-top:1px solid var(--line);padding:34px 0;text-align:center;color:var(--muted);font-size:.85rem}
+footer .grille{margin:0 auto 18px}
+
+/* ---------- Floating buttons ---------- */
+.float-btns{position:fixed;right:16px;bottom:16px;z-index:300;display:flex;flex-direction:column;gap:12px}
+.fab{width:56px;height:56px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;box-shadow:0 6px 20px rgba(0,0,0,.5);transition:transform .15s}
+.fab:hover{transform:scale(1.08)}
+.fab:active{transform:scale(.96)}
+.fab .icon{width:26px;height:26px}
+.fab-mail{background:linear-gradient(135deg,var(--red),var(--purple))}
+.fab-call{background:linear-gradient(135deg,var(--purple),var(--blue))}
+
+/* ---------- Toast ---------- */
+.toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%) translateY(120px);background:#1e1e1e;border:1px solid var(--red);color:#fff;padding:14px 22px;border-radius:10px;font-size:.9rem;z-index:400;transition:transform .3s;max-width:90%}
+.toast.show{transform:translateX(-50%) translateY(0)}
+
+/* ---------- Theme toggle ---------- */
+.theme-toggle{display:inline-flex;align-items:center;justify-content:center;background:transparent;border:1px solid var(--line);border-radius:6px;color:var(--muted);min-width:40px;min-height:40px;line-height:1;transition:color .15s,border-color .15s}
+.theme-toggle:hover{color:#fff;border-color:var(--chrome-3)}
+.theme-toggle .icon{width:18px;height:18px}
+
+/* ---------- Scroll reveal ---------- */
+.reveal{opacity:0;transform:translateY(16px) scale(.995);transition:opacity .7s cubic-bezier(.16,1,.3,1),transform .7s cubic-bezier(.16,1,.3,1)}
+.reveal.in{opacity:1;transform:none}
+@media(prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  .reveal{opacity:1;transform:none;transition:none}
+  .eq span,.logo-wrap::before,.marquee-track,.scroll-cue i,.pl-bar i{animation:none}
+  .btn-red::after,.nav-links a::after,.svc::before,.plan::before,.nav-inner{transition:none}
+}
+
+/* ---------- Add-ons alignment ---------- */
+.addons-grid div{display:flex;justify-content:space-between;align-items:baseline;gap:14px;padding:5px 0;border-bottom:1px dashed var(--line)}
+.addons-grid div b{float:none;white-space:nowrap}
+
+/* ---------- Atmosphere & craft ---------- */
+/* film-grain / stage-haze — the "expensive" texture: static, monochrome, barely there */
+body::after{content:"";position:fixed;inset:0;z-index:150;pointer-events:none;opacity:.05;mix-blend-mode:overlay;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.82' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size:170px 170px}
+body.light::after{mix-blend-mode:multiply;opacity:.04}
+
+/* cards catch a hairline of light on the top edge + soft ambient floor shadow (dark-luxury depth) */
+.svc,.plan,.testi,.addons,.quote-form,.quote-result,.panel,.faq-item{box-shadow:inset 0 1px 0 rgba(255,255,255,.045),0 18px 40px -30px rgba(0,0,0,.9)}
+
+/* SIGNATURE: a soft stage-light grazes each card, tracking the pointer */
+.svc,.plan{position:relative}
+.svc::before,.plan::before{content:"";position:absolute;inset:0;z-index:0;pointer-events:none;border-radius:inherit;opacity:0;transition:opacity .4s ease;
+  background:radial-gradient(240px circle at var(--mx,50%) var(--my,0%),rgba(255,45,164,.15),rgba(139,61,255,.06) 42%,transparent 66%)}
+.svc:hover::before,.plan:hover::before{opacity:1}
+.svc>*,.plan>*{position:relative;z-index:1}
+
+/* chrome glint sweeps across the primary CTA on hover */
+.btn{position:relative;overflow:hidden}
+.btn-red::after{content:"";position:absolute;top:0;left:-130%;width:55%;height:100%;pointer-events:none;transform:skewX(-18deg);
+  background:linear-gradient(100deg,transparent,rgba(255,255,255,.4),transparent);transition:left .6s cubic-bezier(.22,1,.36,1)}
+.btn-red:hover::after{left:150%}
+
+/* condensed nav after scroll + underline that draws in under each link */
+nav.scrolled{background:rgba(8,8,9,.96);box-shadow:0 10px 30px -14px rgba(0,0,0,.85)}
+nav.scrolled .nav-inner{height:56px}
+.nav-links a::after{content:"";position:absolute;left:0;right:0;bottom:-7px;height:2px;border-radius:2px;background:var(--grad);transform:scaleX(0);transform-origin:left;transition:transform .3s cubic-bezier(.22,1,.36,1)}
+.nav-links a:hover::after,.nav-links a.active::after{transform:scaleX(1)}
+.nav-links a.active{color:#fff}
+
+/* ---------- Premium layer ---------- */
+/* generous cinematic breathing room + larger display scale */
+section{padding:clamp(76px,11vw,128px) 0}
+.section-title{font-size:clamp(1.9rem,5vw,3.1rem)}
+.hero h1{font-size:clamp(1.7rem,4.6vw,2.9rem)}
+.stat b{font-size:clamp(1.8rem,4.5vw,2.8rem)}
+
+/* scroll progress hairline */
+.scroll-progress{position:fixed;top:0;left:0;right:0;height:2px;z-index:210;background:var(--grad);transform-origin:left;transform:scaleX(0);pointer-events:none}
+
+/* preloader curtain */
+.preloader{display:none;position:fixed;inset:0;z-index:600;background:#070708;align-items:center;justify-content:center;flex-direction:column;gap:20px}
+.preloader.on{display:flex}
+.preloader img{height:150px;width:auto;filter:drop-shadow(0 0 34px rgba(255,45,164,.45))}
+.preloader .pl-tag{font-family:'Oswald',sans-serif;text-transform:uppercase;letter-spacing:.5em;font-size:.78rem;color:var(--chrome-2);padding-left:.5em}
+.preloader .pl-bar{width:130px;height:2px;background:#232323;overflow:hidden;border-radius:2px}
+.preloader .pl-bar i{display:block;height:100%;width:100%;background:var(--grad);transform:scaleX(0);transform-origin:left}
+
+/* WebGL stage canvas — screen-blends over the CSS hero, so the CSS look is the no-WebGL fallback */
+#stage{position:absolute;inset:0;width:100%;height:100%;display:block;pointer-events:none;mix-blend-mode:screen}
+
+/* scroll cue */
+.scroll-cue{position:absolute;left:50%;bottom:20px;transform:translateX(-50%);z-index:2;display:flex;flex-direction:column;align-items:center;gap:8px;color:var(--muted);font-size:.66rem;letter-spacing:.32em;text-transform:uppercase;padding-left:.32em}
+.scroll-cue i{width:1px;height:34px;background:linear-gradient(180deg,var(--red),transparent);animation:cue 2s cubic-bezier(.16,1,.3,1) infinite}
+@keyframes cue{0%{transform:scaleY(0);transform-origin:top}45%{transform:scaleY(1);transform-origin:top}55%{transform:scaleY(1);transform-origin:bottom}100%{transform:scaleY(0);transform-origin:bottom}}
+
+/* audio-reactive EQ + hear-it-live toggle */
+.eq-wrap{display:flex;flex-direction:column;align-items:center;gap:16px;margin-top:44px}
+.eq-wrap .eq{margin-top:0}
+.eq.live span{animation:none;transition:height .09s linear}
+.hear{display:inline-flex;align-items:center;gap:8px;background:rgba(255,255,255,.04);border:1px solid var(--line);color:var(--muted);border-radius:20px;padding:9px 18px;font-size:.75rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;min-height:40px;transition:color .15s,border-color .15s,box-shadow .15s}
+.hear:hover{color:#fff;border-color:var(--chrome-3)}
+.hear[aria-pressed=true]{color:#fff;border-color:var(--red);box-shadow:0 0 24px rgba(255,45,164,.28)}
+.hear .icon{width:14px;height:14px}
+
+/* chrome-stroke marquee */
+.marquee{overflow:hidden;border-top:1px solid var(--line);border-bottom:1px solid var(--line);background:var(--black);padding:22px 0}
+.marquee-track{display:flex;gap:44px;width:max-content;align-items:center;animation:marq 38s linear infinite}
+.marquee span{font-family:'Oswald',sans-serif;font-weight:700;font-size:clamp(1.6rem,4.2vw,2.7rem);text-transform:uppercase;letter-spacing:.06em;color:transparent;-webkit-text-stroke:1px var(--chrome-3);white-space:nowrap}
+.marquee i{color:var(--red);font-style:normal;font-size:1rem;flex-shrink:0}
+@keyframes marq{to{transform:translateX(-50%)}}
+
+/* gallery lightbox */
+.tile{cursor:zoom-in}
+.lightbox{border:none;background:transparent;padding:0;max-width:none;max-height:none;width:100%;height:100%}
+.lightbox::backdrop{background:rgba(5,5,6,.93);backdrop-filter:blur(6px)}
+.lightbox figure{position:fixed;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;margin:0;padding:4vh 4vw}
+.lightbox img{max-width:min(1200px,90vw);max-height:78vh;width:auto;border-radius:12px;box-shadow:0 30px 80px -20px rgba(0,0,0,.85)}
+.lightbox figcaption{color:#b8bcc2;font-size:.9rem;letter-spacing:.04em}
+.lb-btn{position:fixed;background:rgba(20,20,22,.72);border:1px solid #2a2a2a;color:#eaeaea;width:48px;height:48px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.5rem;line-height:1;backdrop-filter:blur(8px);transition:border-color .15s,color .15s}
+.lb-btn:hover{border-color:var(--red);color:#fff}
+.lb-close{top:18px;right:18px}
+.lb-prev{left:14px;top:50%;transform:translateY(-50%)}
+.lb-next{right:14px;top:50%;transform:translateY(-50%)}
+
+/* ---------- Light mode ---------- */
+body.light{--black:#f4f4f6;--dark:#eaecef;--card:#ffffff;--card2:#f1f2f5;--text:#1c1c22;--muted:#5c5e66;--line:#d9dbe1;--chrome-1:#3a3d44;--chrome-2:#6a6e78;--chrome-3:#23252b}
+body.light .hero{color:#eaeaea}
+body.light .hero p{color:#9a9a9a}
+body.light .hero .btn-ghost{color:#eaeaea;border-color:#6e747c}
+body.light .nav-logo{color:#eaeaea}
+body.light .nav-links a{color:#9a9a9a}
+body.light .nav-links a:hover{color:#fff}
+body.light .lang-toggle{border-color:#2a2a2a}
+body.light .lang-toggle button{color:#9a9a9a}
+body.light .lang-toggle button.active{color:#fff}
+body.light .theme-toggle{border-color:#2a2a2a;color:#9a9a9a}
+body.light .mobile-menu a{color:#eaeaea}
+body.light .plan li,body.light .testi p,body.light .q-line,body.light .addons-grid,body.light .checks label{color:#3a3d44}
+body.light .addons-grid div b{color:#1c1c22}
+body.light .faq-q{color:#1c1c22}
+body.light .field input,body.light .field select,body.light .field textarea{color:#1c1c22}
+</style>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "LocalBusiness",
+  "@id": "https://v8sm.co.za/#business",
+  "name": "V8 Sound Machine",
+  "description": "Professional event sound, lighting and entertainment company providing complete audio solutions for weddings, corporate functions, schools, churches, birthdays and private events across the Western Cape.",
+  "url": "https://v8sm.co.za/",
+  "logo": "https://v8sm.co.za/logo.png",
+  "image": "https://v8sm.co.za/logo.png",
+  "telephone": "+27832290642",
+  "email": "info@v8soundmachine.co.za",
+  "priceRange": "R1,950 - R6,500+",
+  "address": {
+    "@type": "PostalAddress",
+    "addressLocality": "Wellington",
+    "addressRegion": "Western Cape",
+    "postalCode": "7655",
+    "addressCountry": "ZA"
+  },
+  "geo": { "@type": "GeoCoordinates", "latitude": -33.6392, "longitude": 19.0112 },
+  "areaServed": {
+    "@type": "GeoCircle",
+    "geoMidpoint": { "@type": "GeoCoordinates", "latitude": -33.6392, "longitude": 19.0112 },
+    "geoRadius": 200000
+  },
+  "knowsAbout": ["Event sound", "Sound system hire", "Wedding ceremony audio", "Wedding reception entertainment", "DJ services", "Event lighting", "Corporate functions", "School events", "Church events", "Wireless microphones", "MC support"],
+  "makesOffer": [
+    {
+      "@type": "Offer",
+      "name": "Bronze Package",
+      "description": "Professional sound system, up to 2 wireless microphones, background music, setup and pack-down. Ideal for wedding ceremonies, church services, funerals, school events and corporate presentations.",
+      "price": "1950",
+      "priceCurrency": "ZAR"
+    },
+    {
+      "@type": "Offer",
+      "name": "Silver Package",
+      "description": "Professional sound system, DJ entertainment up to 5 hours, wireless microphone, dance floor lighting, music planning, setup and pack-down. Ideal for birthdays, engagements, private functions and corporate events.",
+      "price": "3950",
+      "priceCurrency": "ZAR"
+    },
+    {
+      "@type": "Offer",
+      "name": "Gold Package",
+      "description": "Ceremony and reception sound, professional DJ up to 8 hours, premium lighting, wireless microphones, MC support, music planning consultation, setup and pack-down. Ideal for weddings, corporate galas and year-end functions.",
+      "price": "6500",
+      "priceCurrency": "ZAR"
+    }
+  ]
+}
+</script>
+</head>
+<body>
+
+<!-- ================= PRELOADER ================= -->
+<div class="preloader" id="preloader" aria-hidden="true">
+  <img src="logo.webp" alt="">
+  <div class="pl-tag">Power Your Event</div>
+  <div class="pl-bar"><i></i></div>
+</div>
+<script>if(!sessionStorage.getItem('v8intro')&&!matchMedia('(prefers-reduced-motion:reduce)').matches)document.getElementById('preloader').classList.add('on')</script>
+<div class="scroll-progress" id="scrollProg" aria-hidden="true"></div>
+
+<!-- ================= NAV ================= -->
+<nav>
+  <div class="container nav-inner">
+    <a href="#home" class="nav-logo">
+      <img src="logo.webp" alt="V8 Sound Machine logo" onerror="this.remove()">
+      <span><span class="v8">V8</span> Sound Machine</span>
+    </a>
+    <ul class="nav-links">
+      <li><a href="#services" data-i18n="nav_services">Services</a></li>
+      <li><a href="#pricing" data-i18n="nav_pricing">Packages</a></li>
+      <li><a href="#quote" data-i18n="nav_quote">Instant Quote</a></li>
+      <li><a href="#gallery" data-i18n="nav_gallery">Gallery</a></li>
+      <li><a href="#faq" data-i18n="nav_faq">FAQ</a></li>
+      <li><a href="#contact" data-i18n="nav_contact">Contact</a></li>
+    </ul>
+    <div class="nav-right">
+      <div class="lang-toggle">
+        <button id="lang-en" class="active" onclick="setLang('en')">EN</button>
+        <button id="lang-af" onclick="setLang('af')">AF</button>
+      </div>
+      <button class="theme-toggle" id="themeBtn" onclick="toggleTheme()" aria-label="Toggle light or dark mode" title="Light / dark mode"></button>
+      <a href="#booking" class="btn btn-red nav-cta" data-i18n="nav_book">Book an Event</a>
+      <button class="burger" onclick="toggleMenu()" aria-label="Menu"><span></span><span></span><span></span></button>
+    </div>
+  </div>
+</nav>
+<div class="mobile-menu" id="mobileMenu">
+  <a href="#services" onclick="toggleMenu()">Services</a>
+  <a href="#pricing" onclick="toggleMenu()">Packages</a>
+  <a href="#quote" onclick="toggleMenu()">Instant Quote</a>
+  <a href="#gallery" onclick="toggleMenu()">Gallery</a>
+  <a href="#faq" onclick="toggleMenu()">FAQ</a>
+  <a href="#contact" onclick="toggleMenu()">Contact</a>
+  <a href="#booking" onclick="toggleMenu()" style="color:var(--red);font-weight:700">Book an Event →</a>
+</div>
+
+<!-- ================= HERO ================= -->
+<header class="hero" id="home">
+  <canvas id="stage" aria-hidden="true"></canvas>
+  <div class="container hero-inner">
+    <div class="logo-wrap">
+      <img class="hero-logo" src="logo.webp" alt="V8 Sound Machine" onerror="this.parentElement.remove();document.getElementById('textLogo').style.display='flex'">
+    </div>
+    <div class="hero-textlogo" id="textLogo">
+      <div class="big chrome-text">V<em>8</em> </div>
+      <div class="small">Sound Machine</div>
+    </div>
+    <h1 data-i18n="hero_title">Professional Sound, Lighting & Entertainment</h1>
+    <p data-i18n="hero_sub">Creating unforgettable weddings, parties, corporate events and special occasions with complete sound, lighting and entertainment solutions — across the Western Cape.</p>
+    <div class="hero-ctas">
+      <a href="#quote" class="btn btn-red" data-i18n="hero_cta1"><svg class="icon icon-fill" viewBox="0 0 24 24" aria-hidden="true"><path d="M13 2 3 14h7l-1 8 10-12h-7z"/></svg> Get an Instant Quote</a>
+      <a href="#booking" class="btn btn-ghost" data-i18n="hero_cta2">Book an Event</a>
+    </div>
+    <div class="eq-wrap">
+      <div class="eq" id="eq" aria-hidden="true"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div>
+      <button class="hear" id="hearBtn" aria-pressed="false"><svg class="icon icon-fill" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg><span id="hearLabel" data-i18n="hear_label">Hear the machine</span></button>
+    </div>
+  </div>
+  <div class="scroll-cue" aria-hidden="true"><span>Scroll</span><i></i></div>
+</header>
+
+<!-- ================= MARQUEE ================= -->
+<div class="marquee" aria-hidden="true">
+  <div class="marquee-track">
+    <span>Weddings</span><i>✦</i><span>Corporate</span><i>✦</i><span>Birthdays</span><i>✦</i><span>Schools</span><i>✦</i><span>Churches</span><i>✦</i><span>Festivals</span><i>✦</i>
+    <span>Weddings</span><i>✦</i><span>Corporate</span><i>✦</i><span>Birthdays</span><i>✦</i><span>Schools</span><i>✦</i><span>Churches</span><i>✦</i><span>Festivals</span><i>✦</i>
+  </div>
+</div>
+
+<!-- ================= STATS ================= -->
+<div class="stats">
+  <div class="container stats-grid">
+    <div class="stat"><b class="chrome-text" data-count="350">0</b><span data-i18n="stat_events">Events Completed</span></div>
+    <div class="stat"><b class="chrome-text" data-count="10">0</b><span data-i18n="stat_years">Years Experience</span></div>
+    <div class="stat"><b class="chrome-text" data-count="80000">0</b><span data-i18n="stat_guests">Guests Entertained</span></div>
+    <div class="stat"><b class="chrome-text">4.9★</b><span data-i18n="stat_rating">Average Rating</span></div>
+  </div>
+</div>
+
+<!-- ================= SERVICES ================= -->
+<section id="services">
+  <div class="container">
+    <span class="section-tag" data-i18n="svc_tag">What We Do</span>
+    <h2 class="section-title" data-i18n="svc_title">Our <span class="chrome-text">Services</span></h2>
+    <div class="grille"></div>
+    <p class="section-sub" data-i18n="svc_sub">Complete event sound and entertainment solutions — professional equipment, experienced people, and a seamless experience from setup to pack-down.</p>
+    <div class="services-grid">
+      <div class="svc"><div class="ico"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M11 5 6 9H2v6h4l5 4z"/><path d="M15.5 8.5a5 5 0 0 1 0 7"/><path d="M19 5a10 10 0 0 1 0 14"/></svg></div><h3>Professional Event Sound</h3><p>Crystal-clear audio for every occasion — weddings, corporate functions, school events, church services and private celebrations, sized perfectly to your venue.</p></div>
+      <div class="svc"><div class="ico"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><line x1="4" y1="21" x2="4" y2="14"/><line x1="4" y1="10" x2="4" y2="3"/><line x1="12" y1="21" x2="12" y2="12"/><line x1="12" y1="8" x2="12" y2="3"/><line x1="20" y1="21" x2="20" y2="16"/><line x1="20" y1="12" x2="20" y2="3"/><line x1="1" y1="14" x2="7" y2="14"/><line x1="9" y1="8" x2="15" y2="8"/><line x1="17" y1="16" x2="23" y2="16"/></svg></div><h3>Sound System Hire</h3><p>Professional PA systems with experienced operators — from intimate ceremonies to large outdoor events, delivered, set up and managed for you.</p></div>
+      <div class="svc"><div class="ico"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M19 14c1.49-1.46 3-3.2 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7z"/></svg></div><h3>Wedding Sound Specialists</h3><p>Flawless ceremony audio, wireless microphones for vows and speeches, and reception entertainment that keeps your celebration flowing — one team for your whole day.</p></div>
+      <div class="svc"><div class="ico"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg></div><h3>Corporate Functions</h3><p>Conference audio, presentations, awards evenings, year-end functions and product launches — professional, reliable and on time, with invoicing for procurement.</p></div>
+      <div class="svc"><div class="ico"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="22"/></svg></div><h3>Wireless Microphones & MC Support</h3><p>Quality wireless microphones for speeches and presentations, plus confident bilingual MC support to keep your programme flowing smoothly.</p></div>
+      <div class="svc"><div class="ico"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M15 14c.2-1 .7-1.7 1.5-2.5C17.7 10.2 18 9 18 7.5a6 6 0 0 0-12 0c0 1.5.3 2.7 1.5 4C8.3 12.3 8.8 13 9 14"/><path d="M9 18h6"/><path d="M10 22h4"/></svg></div><h3>Event Lighting</h3><p>Premium lighting design — dance-floor effects and coloured accent lighting in your event colours to transform any venue after dark.</p></div>
+      <div class="svc"><div class="ico"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="2.2"/><path d="M12 2a10 10 0 0 1 10 10"/><path d="M12 22a10 10 0 0 1-10-10"/></svg></div><h3>DJ Entertainment</h3><p>Experienced DJs across all genres, with music planning tailored to your taste and a crowd-reading instinct that keeps every dance floor alive.</p></div>
+      <div class="svc"><div class="ico"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></div><h3>Schools, Churches & Community</h3><p>Dependable sound for school events, church services, fun days and community gatherings — clear speech, appropriate music and hassle-free setup.</p></div>
+      <div class="svc"><div class="ico"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg></div><h3>Custom Event Packages</h3><p>Every event is different. We tailor sound, lighting and entertainment to your occasion, venue and budget — with setup and pack-down always included.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= PRICING ================= -->
+<section id="pricing">
+  <div class="container">
+    <span class="section-tag">Packages</span>
+    <h2 class="section-title">Event <span class="chrome-text">Packages</span></h2>
+    <div class="grille"></div>
+    <p class="section-sub">Transparent pricing, no surprises. Every package includes professional setup, pack-down and a full sound check before your guests arrive.</p>
+    <div class="pricing-grid">
+      <div class="plan">
+        <h3>Bronze</h3><div class="for">Ceremonies · services · presentations</div>
+        <div class="price">R1,950<small> starting from</small></div>
+        <ul>
+          <li>Professional sound system</li>
+          <li>Up to 2 wireless microphones</li>
+          <li>Background music</li>
+          <li>Setup and pack-down</li>
+          <li>Ideal for wedding ceremonies, church services, funerals, school events & corporate presentations</li>
+        </ul>
+        <a href="#booking" class="btn btn-ghost btn-block" onclick="preselect('Bronze')">Choose Bronze</a>
+      </div>
+      <div class="plan featured">
+        <div class="badge">Most Popular</div>
+        <h3>Silver</h3><div class="for">Parties · celebrations · functions</div>
+        <div class="price">R3,950<small> starting from</small></div>
+        <ul>
+          <li>Professional sound system</li>
+          <li>DJ entertainment (up to 5 hours)</li>
+          <li>Wireless microphone</li>
+          <li>Basic dance floor lighting</li>
+          <li>Music planning</li>
+          <li>Setup and pack-down</li>
+          <li>Ideal for birthdays, engagements, private functions & corporate events</li>
+        </ul>
+        <a href="#booking" class="btn btn-red btn-block" onclick="preselect('Silver')">Choose Silver</a>
+      </div>
+      <div class="plan">
+        <h3>Gold</h3><div class="for">Weddings · galas · large functions</div>
+        <div class="price">R6,500<small> starting from</small></div>
+        <ul>
+          <li>Ceremony sound</li>
+          <li>Reception sound</li>
+          <li>Professional DJ (up to 8 hours)</li>
+          <li>Premium lighting</li>
+          <li>Wireless microphones</li>
+          <li>MC support</li>
+          <li>Music planning consultation</li>
+          <li>Setup and pack-down</li>
+          <li>Ideal for weddings, large private functions, corporate galas & year-end functions</li>
+        </ul>
+        <a href="#booking" class="btn btn-ghost btn-block" onclick="preselect('Gold')">Choose Gold</a>
+      </div>
+    </div>
+    <div class="addons">
+      <h3>Popular Add-Ons</h3>
+      <div class="addons-grid">
+        <div>Professional MC <b>+R1,500</b></div>
+        <div>Extra hour of DJ time <b>+R650</b></div>
+        <div>Venue accent lighting (4 colour lights) <b>+R800</b></div>
+        <div>Smoke / haze machine <b>+R450</b></div>
+        <div>Extra wireless mic <b>+R250</b></div>
+        <div>Projector & screen <b>+R1,200</b></div>
+        <div>Generator (no-power venues) <b>+R1,800</b></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= INSTANT QUOTE ================= -->
+<section id="quote">
+  <div class="container">
+    <span class="section-tag">60-Second Estimate</span>
+    <h2 class="section-title">Instant <span class="chrome-text">Quote</span></h2>
+    <div class="grille"></div>
+    <p class="section-sub">Build your event below and get a live estimate. Send it through and we'll confirm the final price within 24 hours.</p>
+    <div class="quote-wrap">
+      <div class="quote-form">
+        <div class="field">
+          <label for="qName">Your name *</label>
+          <input id="qName" placeholder="Full name" autocomplete="name">
+        </div>
+        <div class="field">
+          <label for="qPhone">Phone number *</label>
+          <input id="qPhone" type="tel" placeholder="e.g. 071 234 5678" autocomplete="tel">
+        </div>
+        <div class="field">
+          <label for="qType">Event type</label>
+          <select id="qType" onchange="calcQuote()">
+            <option value="party">Birthday / Private Function</option>
+            <option value="wedding">Wedding (Ceremony + Reception)</option>
+            <option value="corporate">Corporate Function</option>
+            <option value="school">School Event</option>
+            <option value="church">Church Event</option>
+            <option value="other">Other Occasion</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="qDate">Event date</label>
+          <input type="date" id="qDate" onchange="calcQuote()">
+        </div>
+        <div class="field">
+          <label for="qGuests">Guests: <span class="range-val" id="qGuestsVal">100</span></label>
+          <input type="range" id="qGuests" min="20" max="1000" step="10" value="100" oninput="calcQuote()">
+        </div>
+        <div class="field">
+          <label for="qHours">DJ hours: <span class="range-val" id="qHoursVal">6</span></label>
+          <input type="range" id="qHours" min="3" max="12" value="6" oninput="calcQuote()">
+        </div>
+        <div class="field">
+          <label>Add-ons</label>
+          <div class="checks">
+            <label><input type="checkbox" data-price="1500" data-name="Professional MC" onchange="calcQuote()"> MC (+R1,500)</label>
+            <label><input type="checkbox" data-price="800" data-name="Venue accent lighting" onchange="calcQuote()"> Accent lighting (+R800)</label>
+            <label><input type="checkbox" data-price="450" data-name="Smoke machine" onchange="calcQuote()"> Smoke (+R450)</label>
+            <label><input type="checkbox" data-price="1200" data-name="Projector & screen" onchange="calcQuote()"> Projector (+R1,200)</label>
+            <label><input type="checkbox" data-price="1800" data-name="Generator" onchange="calcQuote()"> Generator (+R1,800)</label>
+          </div>
+        </div>
+      </div>
+      <div class="quote-result">
+        <h3 style="margin-bottom:14px">Your Estimate</h3>
+        <div id="qBreakdown"></div>
+        <div class="q-total"><span>Estimate</span><span class="chrome-text" id="qTotal">R0</span></div>
+        <p class="q-note">* Estimate only. Final quote depends on venue, distance and date availability. We serve events within a 200 km radius of Wellington, Western Cape.</p>
+        <button class="btn btn-red btn-block" onclick="sendQuote()">Email This Quote to Us</button>
+        <div style="height:10px"></div>
+        <button class="btn btn-ghost btn-block" onclick="openQuotePdf()">Save Quote as PDF</button>
+        <p class="q-note" style="margin:10px 0 0">Sending opens your email app with the quote pre-filled and logs it with your details — the PDF is your written copy to keep or forward.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= GALLERY ================= -->
+<section id="gallery">
+  <div class="container">
+    <span class="section-tag">Our Work</span>
+    <h2 class="section-title">Event <span class="chrome-text">Gallery</span></h2>
+    <div class="grille"></div>
+    <div class="filters" id="galFilters">
+      <button class="active" data-cat="all">All</button>
+      <button data-cat="wedding">Weddings</button>
+      <button data-cat="party">Parties</button>
+      <button data-cat="corporate">Corporate</button>
+      <button data-cat="lighting">Lighting</button>
+      <button data-cat="setup">Setups</button>
+    </div>
+    <p class="q-note" style="margin-bottom:16px">Stock photos for now — we'll swap in real V8 event photos as you collect them.</p>
+    <div class="gallery-grid" id="galGrid">
+      <div class="tile" data-cat="wedding"><img src="https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&w=800&q=60" alt="Wedding first dance" loading="lazy" onerror="this.remove()"><span>Wedding — first dance</span></div>
+      <div class="tile" data-cat="wedding"><img src="https://images.unsplash.com/photo-1465495976277-4387d4b0b4c6?auto=format&fit=crop&w=800&q=60" alt="Wedding couple send-off" loading="lazy" onerror="this.remove()"><span>Wedding — Couple send-off</span></div>
+      <div class="tile" data-cat="party"><img src="https://images.unsplash.com/photo-1492684223066-81342ee5ff30?auto=format&fit=crop&w=800&q=60" alt="Party confetti" loading="lazy" onerror="this.remove()"><span>21st birthday bash</span></div>
+      <div class="tile" data-cat="party"><img src="https://images.unsplash.com/photo-1530103862676-de8c9debad1d?auto=format&fit=crop&w=800&q=60" alt="Garden party" loading="lazy" onerror="this.remove()"><span>Garden party vibes</span></div>
+      <div class="tile" data-cat="corporate"><img src="https://images.unsplash.com/photo-1540575467063-178a50c2df87?auto=format&fit=crop&w=800&q=60" alt="Corporate conference" loading="lazy" onerror="this.remove()"><span>Year-end function</span></div>
+      <div class="tile" data-cat="corporate"><img src="https://images.unsplash.com/photo-1505373877841-8d25f7d46678?auto=format&fit=crop&w=800&q=60" alt="Conference stage AV" loading="lazy" onerror="this.remove()"><span>Conference AV</span></div>
+      <div class="tile" data-cat="lighting"><img src="https://images.unsplash.com/photo-1516450360452-9312f5e86fc7?auto=format&fit=crop&w=800&q=60" alt="Venue mood lighting" loading="lazy" onerror="this.remove()"><span>Venue mood lighting</span></div>
+      <div class="tile" data-cat="lighting"><img src="https://images.unsplash.com/photo-1524368535928-5b5e00ddc76b?auto=format&fit=crop&w=800&q=60" alt="Dance-floor lighting" loading="lazy" onerror="this.remove()"><span>Dance-floor lighting</span></div>
+      <div class="tile" data-cat="setup"><img src="https://images.unsplash.com/photo-1470225620780-dba8ba36b745?auto=format&fit=crop&w=800&q=60" alt="DJ mixing deck" loading="lazy" onerror="this.remove()"><span>Behind the decks</span></div>
+      <div class="tile" data-cat="setup"><img src="https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?auto=format&fit=crop&w=800&q=60" alt="DJ console" loading="lazy" onerror="this.remove()"><span>DJ booth close-up</span></div>
+      <div class="tile" data-cat="party"><img src="https://images.unsplash.com/photo-1514525253161-7a46d19cd819?auto=format&fit=crop&w=800&q=60" alt="Crowd at party" loading="lazy" onerror="this.remove()"><span>Crowd going off</span></div>
+      <div class="tile" data-cat="wedding"><img src="https://images.unsplash.com/photo-1511795409834-ef04bbd61622?auto=format&fit=crop&w=800&q=60" alt="Wedding reception" loading="lazy" onerror="this.remove()"><span>Reception setup</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= TESTIMONIALS ================= -->
+<section id="testimonials">
+  <div class="container">
+    <span class="section-tag">Happy Clients</span>
+    <h2 class="section-title">What People <span class="chrome-text">Say</span></h2>
+    <div class="grille"></div>
+    <div class="testi-grid">
+      <div class="testi">
+        <div class="stars">★★★★★</div>
+        <p>"We honestly didn't stress about sound once on the day. The mics worked perfectly for the vows, they played exactly what we asked for, and by 11pm nobody wanted to leave. Thank you guys!"</p>
+        <div class="who"><div class="avatar">T&S</div><div><b>Thabo & Sarah M.</b><span>Wedding · 180 guests</span></div></div>
+      </div>
+      <div class="testi">
+        <div class="stars">★★★★★</div>
+        <p>"Booked them for my 40th and I'm so glad I did. They were set up long before anyone arrived and everything just worked — no screeching mics, no drama. Music kept both the aunties and the youngsters happy."</p>
+        <div class="who"><div class="avatar">L</div><div><b>Lerato K.</b><span>40th Birthday · 120 guests</span></div></div>
+      </div>
+      <div class="testi">
+        <div class="stars">★★★★★</div>
+        <p>"Third year-end function they've done for us. Invoice comes through properly for procurement, they arrive when they say they will, and the volume is right — people could actually talk over dinner, then the party side worked too."</p>
+        <div class="who"><div class="avatar">D</div><div><b>David v.d. Merwe</b><span>Corporate · annual client</span></div></div>
+      </div>
+      <div class="testi">
+        <div class="stars">★★★★☆</div>
+        <p>"Announcements were clear right across the field and the kids loved the music. Programme changed twice on the day and they just rolled with it. Four stars only because the bass was a bit much early on — they turned it down the moment we asked."</p>
+        <div class="who"><div class="avatar">N</div><div><b>Nomsa D.</b><span>School fun day · 600 learners</span></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= FAQ ================= -->
+<section id="faq">
+  <div class="container">
+    <span class="section-tag">Good To Know</span>
+    <h2 class="section-title">Frequently Asked <span class="chrome-text">Questions</span></h2>
+    <div class="grille"></div>
+    <div class="faq-item"><button class="faq-q" onclick="toggleFaq(this)">How do I book and secure my date?</button><div class="faq-a"><div>Send a booking request through the form below or email us. We confirm availability within 24 hours. A 50% deposit secures your date; the balance is due 7 days before the event.</div></div></div>
+    <div class="faq-item"><button class="faq-q" onclick="toggleFaq(this)">What payment methods do you accept?</button><div class="faq-a"><div>EFT is preferred. We also accept cash and can arrange card payment on request. Corporate clients receive a formal invoice for procurement.</div></div></div>
+    <div class="faq-item"><button class="faq-q" onclick="toggleFaq(this)">How early do you set up?</button><div class="faq-a"><div>We arrive 2–4 hours before your event (depending on package size), complete a full sound check, and are ready before your first guest walks in.</div></div></div>
+    <div class="faq-item"><button class="faq-q" onclick="toggleFaq(this)">Which areas do you serve?</button><div class="faq-a"><div>We're based in Wellington and serve events within a 200 km radius across the Western Cape — including Paarl, Stellenbosch, Cape Town, Worcester and the Winelands. Travel is quoted upfront where applicable — no surprises on the day.</div></div></div>
+    <div class="faq-item"><button class="faq-q" onclick="toggleFaq(this)">Can we choose the music?</button><div class="faq-a"><div>Absolutely. You can send a playlist, a "must play" list and a "do not play" list. Our DJs blend your choices with crowd-reading on the night.</div></div></div>
+    <div class="faq-item"><button class="faq-q" onclick="toggleFaq(this)">What if the venue has no power?</button><div class="faq-a"><div>No problem — we offer a generator add-on that comfortably runs the full sound and lighting rig, load-shedding included.</div></div></div>
+    <div class="faq-item"><button class="faq-q" onclick="toggleFaq(this)">What happens if we need to cancel?</button><div class="faq-a"><div>Cancellations more than 30 days out receive a full deposit refund. Within 30 days, the deposit can be transferred to a new date within 6 months.</div></div></div>
+  </div>
+</section>
+
+<!-- ================= BOOKING ================= -->
+<section id="booking">
+  <div class="container">
+    <span class="section-tag">Lock It In</span>
+    <h2 class="section-title">Book Your <span class="chrome-text">Event</span></h2>
+    <div class="grille"></div>
+    <p class="section-sub">Fill this in and we'll come back to you within 24 hours with confirmation and a final quote.</p>
+    <div class="book-grid">
+      <form class="panel" id="bookForm" onsubmit="return submitBooking(event)">
+        <div class="field"><label for="bName">Your name *</label><input id="bName" required placeholder="Full name"></div>
+        <div class="field"><label for="bPhone">Phone *</label><input id="bPhone" type="tel" required placeholder="e.g. 071 234 5678"></div>
+        <div class="field"><label for="bEmail">Email</label><input id="bEmail" type="email" placeholder="you@example.com"></div>
+        <div class="field"><label for="bPackage">Package</label>
+          <select id="bPackage">
+            <option>Bronze — from R1,950</option>
+            <option selected>Silver — from R3,950</option>
+            <option>Gold — from R6,500</option>
+            <option>Custom event package / not sure yet</option>
+          </select>
+        </div>
+        <div class="field"><label for="bDate">Event date *</label><input id="bDate" type="date" required></div>
+        <div class="field"><label for="bVenue">Venue / area *</label><input id="bVenue" required placeholder="Venue name, town/suburb"></div>
+        <div class="field"><label for="bNotes">Tell us about your event</label><textarea id="bNotes" rows="4" placeholder="Guest count, add-ons you want, music style, anything special…"></textarea></div>
+        <button class="btn btn-red btn-block" type="submit">Send Booking Request via Email</button>
+        <p class="q-note" style="margin-top:12px">Submitting opens your email app with your details pre-filled — nothing is sent until you press send.</p>
+      </form>
+
+      <!-- ================= CONTACT ================= -->
+      <div class="panel" id="contact">
+        <h3 style="margin-bottom:6px">Get In Touch</h3>
+        <p style="color:var(--muted);font-size:.9rem">Email us your event details — we reply within 24 hours.</p>
+        <div class="contact-rows">
+          <a class="crow" href="mailto:info@v8soundmachine.co.za"><span class="ci"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-10 6L2 7"/></svg></span><span><b>Email</b>info@v8soundmachine.co.za</span></a>
+          <a class="crow" href="tel:+27832290642"><span class="ci"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.8 19.8 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.8 19.8 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.9.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z"/></svg></span><span><b>Call</b>083 229 0642</span></a>
+          <div class="crow"><span class="ci"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0z"/><circle cx="12" cy="10" r="3"/></svg></span><span><b>Based in</b>Wellington, Western Cape — serving a 200 km radius</span></div>
+        </div>
+        <div id="covMap" role="img" aria-label="Map of our 200 km service area around Wellington, Western Cape"></div>
+        <p class="q-note" style="margin-top:8px">The highlighted circle is our service area — Cape Town, Stellenbosch, Paarl, Franschhoek, Worcester, the Winelands, Overberg &amp; West Coast all covered.</p>
+        <!-- Social profiles: add your real links as href="https://…" to each <a> below to activate them -->
+        <div class="socials">
+          <a aria-label="Facebook"><svg class="icon icon-fill" viewBox="0 0 24 24" aria-hidden="true"><path d="M22 12a10 10 0 1 0-11.56 9.88v-6.99H7.9V12h2.54V9.8c0-2.5 1.49-3.89 3.78-3.89 1.09 0 2.24.2 2.24.2v2.46h-1.26c-1.24 0-1.63.77-1.63 1.56V12h2.78l-.44 2.89h-2.34v6.99A10 10 0 0 0 22 12z"/></svg></a>
+          <a aria-label="Instagram"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><line x1="17.5" y1="6.5" x2="17.5" y2="6.5"/></svg></a>
+          <a aria-label="TikTok"><svg class="icon icon-fill" viewBox="0 0 24 24" aria-hidden="true"><path d="M16.6 5.82a4.28 4.28 0 0 1-1.03-2.82h-3.1v12.3a2.42 2.42 0 0 1-2.42 2.42 2.42 2.42 0 0 1 0-4.84c.25 0 .5.04.72.11V9.8a5.6 5.6 0 0 0-.72-.05 5.52 5.52 0 1 0 5.52 5.52V9.01a7.3 7.3 0 0 0 4.27 1.37V7.28a4.28 4.28 0 0 1-3.24-1.46z"/></svg></a>
+          <a aria-label="YouTube"><svg class="icon icon-fill" viewBox="0 0 24 24" aria-hidden="true"><path d="M23 12s0-3.5-.45-5.18a2.62 2.62 0 0 0-1.84-1.85C19.03 4.5 12 4.5 12 4.5s-7.03 0-8.71.47A2.62 2.62 0 0 0 1.45 6.82 27.5 27.5 0 0 0 1 12a27.5 27.5 0 0 0 .45 5.18 2.62 2.62 0 0 0 1.84 1.85c1.68.47 8.71.47 8.71.47s7.03 0 8.71-.47a2.62 2.62 0 0 0 1.84-1.85C23 15.5 23 12 23 12zM9.75 15.02V8.98L15.5 12z"/></svg></a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= FOOTER ================= -->
+<footer>
+  <div class="container">
+    <div class="grille"></div>
+    <p><strong style="font-family:'Oswald',sans-serif;text-transform:uppercase"><span style="color:var(--red)">V8</span> Sound Machine</strong> — Power Your Event.</p>
+    <p style="margin-top:6px">© <span id="year"></span> V8 Sound Machine. All rights reserved.</p>
+  </div>
+</footer>
+
+<!-- ================= LIGHTBOX ================= -->
+<dialog class="lightbox" id="lightbox">
+  <figure><img id="lbImg" src="" alt=""><figcaption id="lbCap"></figcaption></figure>
+  <button class="lb-btn lb-close" id="lbClose" aria-label="Close">×</button>
+  <button class="lb-btn lb-prev" id="lbPrev" aria-label="Previous photo">‹</button>
+  <button class="lb-btn lb-next" id="lbNext" aria-label="Next photo">›</button>
+</dialog>
+
+<!-- ================= FLOATING BUTTONS ================= -->
+<div class="float-btns">
+  <a class="fab fab-mail" href="mailto:info@v8soundmachine.co.za?subject=Event%20enquiry" aria-label="Email us"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-10 6L2 7"/></svg></a>
+  <a class="fab fab-call" href="tel:+27832290642" aria-label="Call us"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.8 19.8 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.8 19.8 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.9.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z"/></svg></a>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+/* ========== CONFIG — swap these for real details ========== */
+const CONTACT_EMAIL = "info@v8soundmachine.co.za";
+
+/* ---- Phase 1: cloud lead capture (see backend/SETUP.md) ---- */
+const SUPABASE_URL = "https://pevjvssiwyduholytsnj.supabase.co";
+const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBldmp2c3Npd3lkdWhvbHl0c25qIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODMzMjIwMTcsImV4cCI6MjA5ODg5ODAxN30.zXx7WoayW4xZbYjjW_Lp_Q6x5T5WO3Bk8yWPVFTKlAY";   // paste anon public key here
+
+function saveLead(data){
+  if(!SUPABASE_URL || !SUPABASE_KEY) return;   // not configured yet — email-only mode
+  fetch(SUPABASE_URL + "/rest/v1/enquiries", {
+    method: "POST",
+    headers: {
+      "apikey": SUPABASE_KEY,
+      "Authorization": "Bearer " + SUPABASE_KEY,
+      "Content-Type": "application/json",
+      "Prefer": "return=minimal"
+    },
+    body: JSON.stringify(data)
+  }).catch(()=>{}); // never block or break the email flow
+}
+
+/* ========== Mobile menu ========== */
+function toggleMenu(){document.getElementById('mobileMenu').classList.toggle('open')}
+
+/* ========== FAQ ========== */
+function toggleFaq(btn){
+  const item = btn.parentElement;
+  const wasOpen = item.classList.contains('open');
+  document.querySelectorAll('.faq-item.open').forEach(i=>i.classList.remove('open'));
+  if(!wasOpen) item.classList.add('open');
+  document.querySelectorAll('.faq-q').forEach(q=>q.setAttribute('aria-expanded', q.parentElement.classList.contains('open')?'true':'false'));
+}
+
+/* ========== Gallery filter ========== */
+document.getElementById('galFilters').addEventListener('click',e=>{
+  if(e.target.tagName!=='BUTTON')return;
+  document.querySelectorAll('#galFilters button').forEach(b=>b.classList.remove('active'));
+  e.target.classList.add('active');
+  const cat=e.target.dataset.cat;
+  document.querySelectorAll('#galGrid .tile').forEach(t=>{
+    t.style.display=(cat==='all'||t.dataset.cat===cat)?'flex':'none';
+  });
+});
+
+/* ========== Animated stats ========== */
+const statObserver=new IntersectionObserver(entries=>{
+  entries.forEach(en=>{
+    if(!en.isIntersecting)return;
+    const el=en.target,target=+el.dataset.count,dur=1400,t0=performance.now();
+    function tick(t){
+      const p=Math.min((t-t0)/dur,1);
+      el.textContent=Math.floor(target*p).toLocaleString()+(p===1?'+':'');
+      if(p<1)requestAnimationFrame(tick);
+    }
+    requestAnimationFrame(tick);
+    statObserver.unobserve(el);
+  });
+},{threshold:.6});
+document.querySelectorAll('[data-count]').forEach(el=>statObserver.observe(el));
+
+/* ========== Instant quote ========== */
+/* One price table, mirrored from the Packages section — keep in sync with the pricing cards. */
+const QUOTE_PKG={school:["Bronze",1950],church:["Bronze",1950],party:["Silver",3950],corporate:["Silver",3950],wedding:["Gold",6500],other:["Custom",2500]};
+function calcQuote(){
+  const type=document.getElementById('qType').value;
+  const guests=+document.getElementById('qGuests').value;
+  const hours=+document.getElementById('qHours').value;
+  document.getElementById('qGuestsVal').textContent=guests;
+  document.getElementById('qHoursVal').textContent=hours;
+
+  let lines=[];
+  const pkg=QUOTE_PKG[type];
+  let total=pkg[1];
+  lines.push([pkg[0]+' package — '+document.getElementById('qType').selectedOptions[0].text,'R'+total.toLocaleString()]);
+
+  // guest scaling: bigger sound for bigger crowds
+  const guestFee=guests>150?Math.ceil((guests-150)/50)*600:0;
+  if(guestFee){total+=guestFee;lines.push(['Extra sound capacity ('+guests+' guests)','R'+guestFee.toLocaleString()])}
+
+  const extraHours=Math.max(0,hours-6);
+  if(extraHours){const f=extraHours*650;total+=f;lines.push([extraHours+' extra DJ hour'+(extraHours>1?'s':''),'R'+f.toLocaleString()])}
+
+  document.querySelectorAll('.checks input:checked').forEach(c=>{
+    total+=+c.dataset.price;
+    lines.push([c.dataset.name,'R'+(+c.dataset.price).toLocaleString()]);
+  });
+
+  // weekend surcharge
+  const d=document.getElementById('qDate').value;
+  if(d){const day=new Date(d).getDay();if(day===0||day===6){const f=Math.round(total*0.1);total+=f;lines.push(['Weekend surcharge (10%)','R'+f.toLocaleString()])}}
+
+  document.getElementById('qBreakdown').innerHTML=lines.map(l=>'<div class="q-line"><span>'+l[0]+'</span><span>'+l[1]+'</span></div>').join('');
+  document.getElementById('qTotal').textContent='R'+total.toLocaleString();
+  return {total,lines,type,guests,hours,date:d,pkg:pkg[0]};
+}
+function quoteContact(){
+  const name=document.getElementById('qName').value.trim();
+  const phone=document.getElementById('qPhone').value.trim();
+  if(!name){showToast("Please add your name so we can prepare your quote");document.getElementById('qName').focus();return null}
+  if(phone.replace(/\D/g,"").length<9){showToast("Please add a valid phone number");document.getElementById('qPhone').focus();return null}
+  return {name,phone};
+}
+let _lastLeadJson="";
+function saveQuoteLead(q,c){
+  const payload={
+    source:"quote",
+    name:c.name,
+    phone:c.phone,
+    package:q.pkg,
+    event_type:q.type,
+    event_date:q.date||null,
+    guests:q.guests,
+    hours:q.hours,
+    addons:q.lines.slice(1).map(l=>l[0]).join(", ")||null,
+    estimate:q.total,
+    notes:q.lines.map(l=>l[0]+" — "+l[1]).join("; ")
+  };
+  const j=JSON.stringify(payload);
+  if(j===_lastLeadJson)return;   // same quote already logged — don't duplicate the lead
+  _lastLeadJson=j;
+  saveLead(payload);
+}
+function sendQuote(){
+  const c=quoteContact();if(!c)return;
+  const q=calcQuote();
+  saveQuoteLead(q,c);
+  let msg="Hi V8 Sound Machine!\n\nInstant quote for "+c.name+" ("+c.phone+"):\n";
+  q.lines.forEach(l=>{msg+="- "+l[0]+" — "+l[1]+"\n"});
+  msg+="Estimate: R"+q.total.toLocaleString()+"\n";
+  if(q.date)msg+="Date: "+q.date+"\n";
+  msg+="Guests: "+q.guests+"\n\nPlease confirm availability. Thanks!";
+  location.href="mailto:"+CONTACT_EMAIL+"?subject="+encodeURIComponent("Instant quote — "+c.name)+"&body="+encodeURIComponent(msg);
+  showToast("Opening your email app — your quote is logged with us too");
+}
+function openQuotePdf(){
+  const c=quoteContact();if(!c)return;
+  const q=calcQuote();
+  saveQuoteLead(q,c);
+  const ref="EQ-"+new Date().getFullYear()+"-"+Date.now().toString(36).slice(-5).toUpperCase();
+  const today=new Date().toLocaleDateString("en-ZA",{day:"numeric",month:"long",year:"numeric"});
+  const valid=new Date(Date.now()+14*86400000).toLocaleDateString("en-ZA",{day:"numeric",month:"long",year:"numeric"});
+  const esc=s=>String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;");
+  const rows=q.lines.map(l=>'<tr><td>'+esc(l[0])+'</td><td>'+esc(l[1])+'</td></tr>').join("");
+  const typeText=document.getElementById('qType').selectedOptions[0].text;
+  const html='<!DOCTYPE html><html><head><meta charset="utf-8"><title>Quote '+ref+' — V8 Sound Machine</title><style>'
+    +'body{font-family:Segoe UI,Arial,sans-serif;color:#1c1c22;margin:0;background:#f4f4f6}'
+    +'.page{max-width:760px;margin:20px auto;background:#fff;padding:40px;box-shadow:0 2px 14px rgba(0,0,0,.08)}'
+    +'.head{display:flex;justify-content:space-between;align-items:center;border-bottom:3px solid #ff2da4;padding-bottom:18px;gap:16px}'
+    +'.head img{height:90px;background:#0a0a0a;border-radius:10px;padding:6px}'
+    +'.head .co{text-align:right;font-size:.85rem;line-height:1.5}.head .co b{font-size:1.05rem}'
+    +'h1{font-size:1.4rem;letter-spacing:.08em;margin:26px 0 4px;color:#ff2da4}'
+    +'.meta{font-size:.85rem;color:#555;margin-bottom:22px}'
+    +'.grid{display:flex;flex-wrap:wrap;gap:30px;margin-bottom:22px;font-size:.9rem}'
+    +'.grid b{display:block;font-size:.72rem;text-transform:uppercase;letter-spacing:.06em;color:#888;margin-bottom:3px}'
+    +'table{width:100%;border-collapse:collapse;font-size:.92rem;margin-bottom:8px}'
+    +'th{text-align:left;font-size:.72rem;text-transform:uppercase;letter-spacing:.06em;color:#888;border-bottom:2px solid #e5e5ea;padding:8px 6px}'
+    +'td{padding:10px 6px;border-bottom:1px solid #eee}td:last-child,th:last-child{text-align:right;white-space:nowrap}'
+    +'.hl td{font-weight:700;font-size:1.05rem;color:#ff2da4;border-top:2px solid #1c1c22;border-bottom:none}'
+    +'.terms{font-size:.8rem;color:#555;margin-top:20px;line-height:1.6}'
+    +'.foot{margin-top:26px;font-size:.78rem;color:#999;text-align:center}'
+    +'.no-print{display:block;margin:18px auto;background:linear-gradient(120deg,#ff2da4,#8b3dff);color:#fff;border:none;border-radius:8px;padding:12px 26px;font-weight:700;cursor:pointer;font-size:1rem}'
+    +'@media print{body{background:#fff}.page{box-shadow:none;margin:0;padding:10px}.no-print{display:none}}'
+    +'</style></head><body><div class="page">'
+    +'<div class="head"><img src="'+new URL("logo.png",location.href).href+'" alt="V8 Sound Machine">'
+    +'<div class="co"><b>V8 SOUND MACHINE</b><br>Event Sound &amp; Entertainment<br>Wellington, Western Cape<br>083 229 0642 · info@v8soundmachine.co.za</div></div>'
+    +'<h1>INSTANT QUOTE ESTIMATE</h1><div class="meta">'+ref+' · Issued '+today+' · Valid until '+valid+'</div>'
+    +'<div class="grid"><div><b>Prepared for</b>'+esc(c.name)+'<br>'+esc(c.phone)+'</div>'
+    +'<div><b>Event</b>'+esc(typeText)+(q.date?'<br>'+esc(q.date):'')+'</div>'
+    +'<div><b>Guests / DJ hours</b>'+q.guests+' guests · '+q.hours+'h</div></div>'
+    +'<table><tr><th>Description</th><th>Amount</th></tr>'+rows
+    +'<tr class="hl"><td>Estimated total</td><td>R'+q.total.toLocaleString()+'</td></tr></table>'
+    +'<div class="terms">This is an instant online estimate, not a final quotation. We confirm the final price within 24 hours once we know your venue and requirements — travel within our 200 km service radius is quoted upfront. A 50% deposit secures your date; the balance is due 7 days before the event. Professional setup, sound check and pack-down are always included.</div>'
+    +'<div class="foot">V8 Sound Machine — Power Your Event · v8sm.co.za · info@v8soundmachine.co.za</div>'
+    +'<button class="no-print" onclick="window.print()">🖨 Print / Save as PDF</button>'
+    +'</div></body></html>';
+  const w=window.open("","_blank");
+  if(!w){showToast("Allow pop-ups to open your quote document");return}
+  w.document.write(html);w.document.close();
+  showToast("Quote "+ref+" ready — print or save as PDF");
+}
+
+/* ========== Booking form ========== */
+function preselect(name){
+  const sel=document.getElementById('bPackage');
+  [...sel.options].forEach(o=>{if(o.text.startsWith(name))sel.value=o.value||o.text,o.selected=true});
+}
+function submitBooking(e){
+  e.preventDefault();
+  const g=id=>document.getElementById(id).value;
+  saveLead({
+    source:"booking",
+    name:g('bName'),
+    phone:g('bPhone'),
+    email:g('bEmail')||null,
+    package:g('bPackage'),
+    event_date:g('bDate')||null,
+    venue:g('bVenue'),
+    notes:g('bNotes')||null
+  });
+  let msg="Hi V8 Sound Machine!\n\nBooking request:\n"
+    +"- Name: "+g('bName')+"\n"
+    +"- Phone: "+g('bPhone')+"\n"
+    +(g('bEmail')?"- Email: "+g('bEmail')+"\n":"")
+    +"- Package: "+g('bPackage')+"\n"
+    +"- Date: "+g('bDate')+"\n"
+    +"- Venue: "+g('bVenue')+"\n"
+    +(g('bNotes')?"- Notes: "+g('bNotes')+"\n":"")
+    +"\nPlease confirm availability. Thanks!";
+  location.href="mailto:"+CONTACT_EMAIL+"?subject="+encodeURIComponent("Booking request — "+g('bName')+(g('bDate')?" ("+g('bDate')+")":""))+"&body="+encodeURIComponent(msg);
+  showToast("Opening your email app with your booking request…");
+  return false;
+}
+function showToast(t){
+  const el=document.getElementById('toast');
+  el.textContent=t;el.classList.add('show');
+  setTimeout(()=>el.classList.remove('show'),3500);
+}
+
+/* ========== Language toggle (EN/AF scaffold) ========== */
+const I18N={
+  en:{},
+  af:{
+    nav_services:"Dienste",nav_pricing:"Pakkette",nav_quote:"Kits-kwotasie",nav_gallery:"Galery",nav_faq:"Vrae",nav_contact:"Kontak",nav_book:"Bespreek 'n Geleentheid",
+    hero_title:"Professionele Klank, Beligting & Vermaak",
+    hero_sub:"Onvergeetlike troues, partytjies, korporatiewe geleenthede en spesiale okkasies met volledige klank-, beligting- en vermaakoplossings — regoor die Wes-Kaap.",
+    hero_cta1:"<svg class=\"icon icon-fill\" viewBox=\"0 0 24 24\" aria-hidden=\"true\"><path d=\"M13 2 3 14h7l-1 8 10-12h-7z\"/></svg> Kry 'n Kits-kwotasie",hero_cta2:"Bespreek 'n Geleentheid",
+    stat_events:"Geleenthede Voltooi",stat_years:"Jaar Ondervinding",stat_guests:"Gaste Vermaak",stat_rating:"Gemiddelde Gradering",
+    svc_tag:"Wat Ons Doen",svc_title:"Ons Dienste",
+    svc_sub:"Volledige klank- en vermaakoplossings vir elke geleentheid — professionele toerusting, ervare mense, en 'n naatlose ervaring van opstel tot afbreek.",
+    hear_label:"Hoor die masjien"
+  }
+};
+const EN_DEFAULTS={};
+document.querySelectorAll('[data-i18n]').forEach(el=>EN_DEFAULTS[el.dataset.i18n]=el.innerHTML);
+function setLang(lang){
+  document.getElementById('lang-en').classList.toggle('active',lang==='en');
+  document.getElementById('lang-af').classList.toggle('active',lang==='af');
+  document.querySelectorAll('[data-i18n]').forEach(el=>{
+    const k=el.dataset.i18n;
+    el.innerHTML=(lang==='af'&&I18N.af[k])?I18N.af[k]:EN_DEFAULTS[k];
+  });
+  document.documentElement.lang=lang;
+}
+
+/* ========== Theme (light/dark) ========== */
+const ICON_SUN='<svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4.2"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>';
+const ICON_MOON='<svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>';
+function applyTheme(t){
+  document.body.classList.toggle('light',t==='light');
+  document.getElementById('themeBtn').innerHTML=t==='light'?ICON_MOON:ICON_SUN;
+}
+function toggleTheme(){
+  const t=document.body.classList.contains('light')?'dark':'light';
+  localStorage.setItem('v8theme',t);applyTheme(t);
+}
+
+/* ========== Scroll reveal ========== */
+const revealEls=document.querySelectorAll('.svc,.plan,.testi,.tile,.faq-item,.addons,.quote-form,.quote-result,.panel');
+revealEls.forEach(el=>el.classList.add('reveal'));
+const revealObs=new IntersectionObserver(entries=>{
+  entries.forEach(en=>{
+    if(!en.isIntersecting)return;
+    const el=en.target;
+    const sibs=[...el.parentElement.children].filter(c=>c.classList.contains('reveal'));
+    el.style.transitionDelay=(Math.max(0,sibs.indexOf(el))%6)*70+'ms';
+    el.classList.add('in');
+    revealObs.unobserve(el);
+  });
+},{threshold:.12,rootMargin:'0px 0px -6% 0px'});
+revealEls.forEach(el=>revealObs.observe(el));
+
+/* ========== Nav condense on scroll ========== */
+const navEl=document.querySelector('nav');
+let navTick=false;
+addEventListener('scroll',()=>{
+  if(navTick)return;navTick=true;
+  requestAnimationFrame(()=>{navEl.classList.toggle('scrolled',window.scrollY>24);navTick=false});
+},{passive:true});
+
+/* ========== Scroll-spy: highlight the section currently in view ========== */
+const spy=[...document.querySelectorAll('.nav-links a[href^="#"]')]
+  .map(a=>{const s=document.getElementById(a.getAttribute('href').slice(1));return s?{a,s}:null}).filter(Boolean);
+if(spy.length){
+  const spyObs=new IntersectionObserver(es=>{
+    es.forEach(en=>{if(en.isIntersecting)spy.forEach(x=>x.a.classList.toggle('active',x.s===en.target))});
+  },{rootMargin:'-45% 0px -50% 0px',threshold:0});
+  spy.forEach(x=>spyObs.observe(x.s));
+}
+
+/* ========== Pointer-tracked stage-light on cards (signature) ========== */
+if(matchMedia('(hover:hover) and (pointer:fine)').matches && !matchMedia('(prefers-reduced-motion:reduce)').matches){
+  document.querySelectorAll('.svc,.plan').forEach(card=>{
+    card.addEventListener('pointermove',e=>{
+      const r=card.getBoundingClientRect();
+      card.style.setProperty('--mx',((e.clientX-r.left)/r.width*100)+'%');
+      card.style.setProperty('--my',((e.clientY-r.top)/r.height*100)+'%');
+    });
+  });
+}
+
+/* ========== Coverage map (Leaflet) ========== */
+window.addEventListener('load',function(){
+  const el=document.getElementById('covMap');
+  if(!el||!window.L)return;   // Leaflet blocked/offline — bordered panel + caption still explain coverage
+  const HQ=[-33.6392,19.0112];
+  const map=L.map(el,{scrollWheelZoom:false});
+  map.fitBounds(L.latLng(HQ).toBounds(400000),{padding:[8,8]});   // view first: circle.getBounds() needs an initialized view
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{attribution:'&copy; OpenStreetMap contributors'}).addTo(map);
+  L.circle(HQ,{radius:200000,color:'#ff2da4',weight:2,fillColor:'#8b3dff',fillOpacity:.12}).addTo(map);
+  L.marker(HQ).addTo(map).bindPopup('<b>V8 Sound Machine</b><br>Wellington — events within 200 km');
+});
+
+/* ========== Init ========== */
+document.querySelectorAll('.faq-q').forEach(q=>q.setAttribute('aria-expanded','false'));
+const _today=new Date().toISOString().slice(0,10);
+document.getElementById('qDate').min=_today;   // no quotes for past dates
+document.getElementById('bDate').min=_today;
+document.getElementById('year').textContent=new Date().getFullYear();
+applyTheme(localStorage.getItem('v8theme')||'dark');
+calcQuote();
+
+/* ================================================================
+   PREMIUM LAYER — WebGL stage lights, audio-reactive EQ, lightbox,
+   cinematic scroll choreography. Everything degrades gracefully:
+   no WebGL → CSS hero, no GSAP → content is simply visible.
+   ================================================================ */
+const REDUCED=matchMedia('(prefers-reduced-motion:reduce)').matches;
+
+/* ---------- Scroll progress hairline ---------- */
+(()=>{const p=document.getElementById('scrollProg'),h=document.documentElement;let tick=false;
+addEventListener('scroll',()=>{if(tick)return;tick=true;
+  requestAnimationFrame(()=>{p.style.transform='scaleX('+(h.scrollTop/Math.max(1,h.scrollHeight-h.clientHeight))+')';tick=false});
+},{passive:true})})();
+
+/* ---------- WebGL volumetric stage lights (hero) ---------- */
+const Stage=(()=>{
+  const cv=document.getElementById('stage');
+  let gl=null;
+  try{gl=cv.getContext('webgl',{alpha:false,antialias:false,powerPreference:'low-power'})}catch(e){}
+  if(!gl){cv.remove();return{setAudio(){}}}
+  const FS=`
+precision highp float;
+uniform vec2 uRes;uniform float uTime;uniform vec2 uMouse;uniform float uAudio;uniform float uIntro;
+float hash(vec2 p){return fract(sin(dot(p,vec2(127.1,311.7)))*43758.5453123);}
+float noise(vec2 p){vec2 i=floor(p);vec2 f=fract(p);f=f*f*(3.0-2.0*f);
+  float a=hash(i),b=hash(i+vec2(1.,0.)),c=hash(i+vec2(0.,1.)),d=hash(i+vec2(1.,1.));
+  return mix(mix(a,b,f.x),mix(c,d,f.x),f.y);}
+float fbm(vec2 p){float v=0.0;float a=0.5;
+  for(int i=0;i<4;i++){v+=a*noise(p);p=p*2.03+vec2(1.7,4.1);a*=0.5;}return v;}
+float beam(vec2 uv,vec2 o,float ang,float wid,float len){
+  vec2 d=uv-o;float r=length(d);
+  float th=atan(d.x,-d.y);
+  float cone=smoothstep(wid,wid*0.12,abs(th-ang));
+  float fall=exp(-r*len);
+  float gate=smoothstep(0.02,0.3,r);
+  return cone*fall*gate;}
+void main(){
+  vec2 uv=(gl_FragCoord.xy-0.5*uRes)/uRes.y;
+  float t=uTime;
+  vec2 m=(uMouse-0.5);
+  float haze=0.42+0.68*fbm(uv*2.6+vec2(t*0.06,-t*0.03));
+  float amp=1.0+uAudio*1.5;
+  float b1=beam(uv,vec2(-0.55,0.62), 0.55+0.20*sin(t*0.42)+m.x*0.20,0.24,1.9);
+  float b2=beam(uv,vec2( 0.55,0.62),-0.55+0.20*sin(t*0.50+2.1)+m.x*0.20,0.24,1.9);
+  float b3=beam(uv,vec2( 0.0 ,0.70), 0.30*sin(t*0.33+4.2)+m.x*0.28,0.17,1.5);
+  vec3 MAG=vec3(1.0,0.176,0.643),PUR=vec3(0.545,0.239,1.0),BLU=vec3(0.153,0.651,1.0);
+  vec3 col=vec3(0.0);
+  col+=MAG*b1*0.75;
+  col+=BLU*b2*0.70;
+  col+=PUR*b3*0.80;
+  col*=haze*amp;
+  float fl=exp(-pow(length((uv-vec2(0.0,-0.52))*vec2(1.1,2.2)),2.0)*2.4);
+  col+=(PUR*0.22+MAG*0.10)*fl*(1.0+uAudio*0.9);
+  float vg=1.0-smoothstep(0.42,1.0,length(uv*vec2(0.9,1.0)));
+  col*=vg*uIntro;
+  col+=(hash(gl_FragCoord.xy+uTime)-0.5)*0.012;
+  gl_FragColor=vec4(col,1.0);
+}`;
+  function sh(type,src){const s=gl.createShader(type);gl.shaderSource(s,src);gl.compileShader(s);
+    if(!gl.getShaderParameter(s,gl.COMPILE_STATUS)){console.warn(gl.getShaderInfoLog(s));return null}return s}
+  const vs=sh(gl.VERTEX_SHADER,'attribute vec2 p;void main(){gl_Position=vec4(p,0.,1.);}');
+  const fs=sh(gl.FRAGMENT_SHADER,FS);
+  if(!vs||!fs){cv.remove();return{setAudio(){}}}
+  const pr=gl.createProgram();gl.attachShader(pr,vs);gl.attachShader(pr,fs);gl.linkProgram(pr);gl.useProgram(pr);
+  gl.bindBuffer(gl.ARRAY_BUFFER,gl.createBuffer());
+  gl.bufferData(gl.ARRAY_BUFFER,new Float32Array([-1,-1,3,-1,-1,3]),gl.STATIC_DRAW);
+  const loc=gl.getAttribLocation(pr,'p');gl.enableVertexAttribArray(loc);gl.vertexAttribPointer(loc,2,gl.FLOAT,false,0,0);
+  const U=n=>gl.getUniformLocation(pr,n);
+  const uRes=U('uRes'),uTime=U('uTime'),uMouse=U('uMouse'),uAudio=U('uAudio'),uIntro=U('uIntro');
+  let mx=.5,my=.35,tx=.5,audio=0,audioT=0,intro=REDUCED?1:0,visible=true,raf=null;
+  const t0=performance.now();
+  function resize(){const d=Math.min(devicePixelRatio||1,1.5);
+    const w=cv.clientWidth*d|0,h=cv.clientHeight*d|0;
+    if(cv.width!==w||cv.height!==h){cv.width=w;cv.height=h;gl.viewport(0,0,w,h)}}
+  function frame(){
+    raf=null;
+    if(!visible||document.hidden)return;
+    resize();
+    mx+=(tx-mx)*0.04;
+    audio+=(audioT-audio)*0.18;
+    intro+=(1-intro)*0.02;
+    gl.uniform2f(uRes,cv.width,cv.height);
+    gl.uniform1f(uTime,(performance.now()-t0)/1000);
+    gl.uniform2f(uMouse,mx,my);
+    gl.uniform1f(uAudio,audio);
+    gl.uniform1f(uIntro,intro);
+    gl.drawArrays(gl.TRIANGLES,0,3);
+    if(!REDUCED)raf=requestAnimationFrame(frame);
+  }
+  function kick(){if(!raf&&(visible&&!document.hidden))raf=requestAnimationFrame(frame)}
+  new IntersectionObserver(en=>{visible=en[0].isIntersecting;kick()}).observe(cv.parentElement);
+  document.addEventListener('visibilitychange',kick);
+  if(matchMedia('(pointer:fine)').matches)cv.parentElement.addEventListener('pointermove',e=>{
+    const r=cv.getBoundingClientRect();tx=(e.clientX-r.left)/r.width;
+  });
+  kick();
+  return{setAudio(v){audioT=v;if(REDUCED)kick()}};
+})();
+
+/* ---------- Audio machine — synthesized 124 BPM loop, opt-in ---------- */
+const AudioMachine=(()=>{
+  let ctx=null,master,analyser,data,noiseBuf,timer=null,step=0,nextT=0;
+  const BPM=124,S16=60/BPM/4;
+  /* A-minor groove: A1 root, octave jumps, C2/G1 passing notes */
+  const BASS=[55,0,0,55, 0,0,110,0, 65.4,0,0,55, 49,0,110,0];
+  function init(){
+    ctx=new (window.AudioContext||window.webkitAudioContext)();
+    master=ctx.createGain();master.gain.value=0;
+    const comp=ctx.createDynamicsCompressor();
+    analyser=ctx.createAnalyser();analyser.fftSize=128;analyser.smoothingTimeConstant=.72;
+    data=new Uint8Array(analyser.frequencyBinCount);
+    master.connect(comp);comp.connect(analyser);analyser.connect(ctx.destination);
+    noiseBuf=ctx.createBuffer(1,ctx.sampleRate*0.2,ctx.sampleRate);
+    const ch=noiseBuf.getChannelData(0);
+    for(let i=0;i<ch.length;i++)ch[i]=Math.random()*2-1;
+  }
+  function kick(t){
+    const o=ctx.createOscillator(),g=ctx.createGain();
+    o.type='sine';
+    o.frequency.setValueAtTime(150,t);o.frequency.exponentialRampToValueAtTime(42,t+0.11);
+    g.gain.setValueAtTime(0.9,t);g.gain.exponentialRampToValueAtTime(0.001,t+0.3);
+    o.connect(g);g.connect(master);o.start(t);o.stop(t+0.32);
+  }
+  function hat(t,open){
+    const s=ctx.createBufferSource();s.buffer=noiseBuf;
+    const f=ctx.createBiquadFilter();f.type='highpass';f.frequency.value=8200;
+    const g=ctx.createGain(),d=open?0.14:0.05;
+    g.gain.setValueAtTime(open?0.15:0.10,t);g.gain.exponentialRampToValueAtTime(0.001,t+d);
+    s.connect(f);f.connect(g);g.connect(master);s.start(t);s.stop(t+d+0.02);
+  }
+  function bass(t,fq){
+    const o=ctx.createOscillator(),g=ctx.createGain(),f=ctx.createBiquadFilter();
+    o.type='sawtooth';o.frequency.value=fq;
+    f.type='lowpass';f.Q.value=7;
+    f.frequency.setValueAtTime(430,t);f.frequency.exponentialRampToValueAtTime(150,t+0.18);
+    g.gain.setValueAtTime(0.001,t);g.gain.exponentialRampToValueAtTime(0.30,t+0.015);g.gain.exponentialRampToValueAtTime(0.001,t+0.2);
+    o.connect(f);f.connect(g);g.connect(master);o.start(t);o.stop(t+0.22);
+  }
+  function schedule(){
+    while(nextT<ctx.currentTime+0.12){
+      const s=step%16;
+      if(s%4===0)kick(nextT);
+      if(s%4===2)hat(nextT,s===14);
+      const fq=BASS[s];if(fq)bass(nextT,fq);
+      step++;nextT+=S16;
+    }
+  }
+  return{
+    get playing(){return !!timer},
+    start(){
+      if(!ctx)init();
+      ctx.resume();
+      step=0;nextT=ctx.currentTime+0.08;
+      master.gain.cancelScheduledValues(ctx.currentTime);
+      master.gain.setTargetAtTime(0.5,ctx.currentTime,0.15);
+      timer=setInterval(schedule,30);
+    },
+    stop(){
+      clearInterval(timer);timer=null;
+      master.gain.setTargetAtTime(0.0001,ctx.currentTime,0.1);
+      setTimeout(()=>{if(!timer&&ctx)ctx.suspend()},600);
+    },
+    level(){
+      if(!timer)return 0;
+      analyser.getByteFrequencyData(data);
+      let s=0;for(let i=0;i<14;i++)s+=data[i];
+      return s/14/255;
+    },
+    spectrum(){
+      if(!timer)return null;
+      analyser.getByteFrequencyData(data);
+      return [1,2,4,7,12,20,32].map(i=>data[Math.min(i,data.length-1)]/255);
+    }
+  };
+})();
+
+/* wire the EQ bars + hear button to the machine */
+(()=>{
+  const btn=document.getElementById('hearBtn'),label=document.getElementById('hearLabel'),
+        eq=document.getElementById('eq'),bars=eq.querySelectorAll('span');
+  let raf=null;
+  function loop(){
+    const sp=AudioMachine.spectrum();
+    if(sp)bars.forEach((b,i)=>b.style.height=(12+sp[i]*88)+'%');
+    Stage.setAudio(AudioMachine.level());
+    raf=requestAnimationFrame(loop);
+  }
+  btn.addEventListener('click',()=>{
+    if(AudioMachine.playing){
+      AudioMachine.stop();
+      btn.setAttribute('aria-pressed','false');label.textContent=EN_DEFAULTS.hear_label||'Hear the machine';
+      cancelAnimationFrame(raf);raf=null;
+      Stage.setAudio(0);
+      eq.classList.remove('live');bars.forEach(b=>b.style.height='');
+    }else{
+      AudioMachine.start();
+      btn.setAttribute('aria-pressed','true');label.textContent='Stop';
+      eq.classList.add('live');
+      loop();
+    }
+  });
+})();
+
+/* ---------- Gallery lightbox ---------- */
+(()=>{
+  const lb=document.getElementById('lightbox');
+  if(!lb||!lb.showModal)return;
+  const img=document.getElementById('lbImg'),cap=document.getElementById('lbCap');
+  let list=[],idx=0;
+  function visTiles(){return [...document.querySelectorAll('#galGrid .tile')].filter(t=>t.style.display!=='none'&&t.querySelector('img'))}
+  function show(i){
+    list=visTiles();if(!list.length)return;
+    idx=(i+list.length)%list.length;
+    const t=list[idx],im=t.querySelector('img');
+    img.src=im.src.replace('w=800','w=1600');img.alt=im.alt;
+    cap.textContent=t.querySelector('span').textContent;
+    if(!lb.open)lb.showModal();
+  }
+  document.getElementById('galGrid').addEventListener('click',e=>{
+    const t=e.target.closest('.tile');if(!t)return;
+    show(visTiles().indexOf(t));
+  });
+  document.querySelectorAll('#galGrid .tile').forEach(t=>{
+    t.setAttribute('role','button');t.setAttribute('tabindex','0');
+    t.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();show(visTiles().indexOf(t))}});
+  });
+  document.getElementById('lbClose').addEventListener('click',()=>lb.close());
+  document.getElementById('lbPrev').addEventListener('click',()=>show(idx-1));
+  document.getElementById('lbNext').addEventListener('click',()=>show(idx+1));
+  lb.addEventListener('keydown',e=>{
+    if(e.key==='ArrowLeft')show(idx-1);
+    if(e.key==='ArrowRight')show(idx+1);
+  });
+  lb.addEventListener('click',e=>{if(e.target===lb)lb.close()});
+})();
+
+/* ---------- Cinematic choreography (GSAP + Lenis) ---------- */
+window.addEventListener('DOMContentLoaded',()=>{
+  const pl=document.getElementById('preloader');
+  const finishPl=()=>{pl.classList.remove('on');pl.style.transform='';sessionStorage.setItem('v8intro','1')};
+  setTimeout(finishPl,4000);   // failsafe: never trap the visitor behind the curtain
+  if(REDUCED||!window.gsap||!window.ScrollTrigger){finishPl();return}
+  gsap.registerPlugin(ScrollTrigger);
+
+  /* buttery smooth scroll — native CSS smooth off so Lenis owns anchors */
+  if(window.Lenis){
+    document.documentElement.style.scrollBehavior='auto';
+    const lenis=new Lenis({duration:1.1,easing:t=>1-Math.pow(1-t,4)});
+    lenis.on('scroll',ScrollTrigger.update);
+    gsap.ticker.add(t=>lenis.raf(t*1000));
+    gsap.ticker.lagSmoothing(0);
+    document.querySelectorAll('a[href^="#"]').forEach(a=>a.addEventListener('click',e=>{
+      const id=a.getAttribute('href');
+      if(id.length<2)return;
+      const el=document.querySelector(id);
+      if(!el)return;
+      e.preventDefault();
+      lenis.scrollTo(el,{offset:-64});
+    }));
+  }
+
+  /* preloader curtain → hero entrance, one continuous timeline */
+  const tl=gsap.timeline({defaults:{ease:'expo.out'}});
+  const intro=pl.classList.contains('on');
+  if(intro){
+    tl.to('.pl-bar i',{scaleX:1,duration:.9,ease:'power2.inOut'})
+      .to(pl,{yPercent:-100,duration:.7,ease:'expo.inOut'},'+=.1')
+      .add(finishPl);
+  }else finishPl();
+  tl.from('.logo-wrap',{scale:.9,autoAlpha:0,duration:1.1},intro?'-=.35':0)
+    .from('.hero h1',{y:26,autoAlpha:0,duration:.8},'-=.6')
+    .from('.hero-inner>p',{y:20,autoAlpha:0,duration:.7},'-=.55')
+    .from('.hero-ctas',{y:18,autoAlpha:0,duration:.7},'-=.5')
+    .from('.eq-wrap',{autoAlpha:0,duration:.6},'-=.4')
+    .from('.scroll-cue',{autoAlpha:0,duration:.6},'-=.3');
+
+  /* hero recedes like a stage as you scroll past it */
+  gsap.to('.hero-inner',{yPercent:-9,opacity:.22,ease:'none',
+    scrollTrigger:{trigger:'.hero',start:'top top',end:'bottom top',scrub:true}});
+
+  /* each section header sweeps in once */
+  document.querySelectorAll('section .container').forEach(c=>{
+    const items=c.querySelectorAll(':scope>.section-tag,:scope>.section-title,:scope>.grille,:scope>.section-sub');
+    if(!items.length)return;
+    gsap.from(items,{y:30,autoAlpha:0,stagger:.09,duration:.9,ease:'expo.out',
+      scrollTrigger:{trigger:c,start:'top 80%',once:true}});
+  });
+
+  /* fonts/images settle late — re-measure triggers so anchors land true */
+  window.addEventListener('load',()=>ScrollTrigger.refresh());
+});
+</script>
+</body>
+</html>
