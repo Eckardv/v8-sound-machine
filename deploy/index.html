@@ -527,10 +527,10 @@ body.light .field input,body.light .field select,body.light .field textarea{colo
 <!-- ================= STATS ================= -->
 <div class="stats">
   <div class="container stats-grid">
-    <div class="stat"><b class="chrome-text" data-count="350">0</b><span data-i18n="stat_events">Events Completed</span></div>
-    <div class="stat"><b class="chrome-text" data-count="10">0</b><span data-i18n="stat_years">Years Experience</span></div>
-    <div class="stat"><b class="chrome-text" data-count="80000">0</b><span data-i18n="stat_guests">Guests Entertained</span></div>
-    <div class="stat"><b class="chrome-text">4.9★</b><span data-i18n="stat_rating">Average Rating</span></div>
+    <div class="stat"><b class="chrome-text" data-count="200" data-suffix="km">0</b><span data-i18n="stat_radius">Service Radius</span></div>
+    <div class="stat"><b class="chrome-text" data-count="3">0</b><span data-i18n="stat_packages">Tailored Packages</span></div>
+    <div class="stat"><b class="chrome-text" data-count="24" data-suffix="-Hr">0</b><span data-i18n="stat_turnaround">Quote Turnaround</span></div>
+    <div class="stat"><b class="chrome-text" data-count="50" data-suffix="%">0</b><span data-i18n="stat_deposit">Deposit Secures Your Date</span></div>
   </div>
 </div>
 
@@ -894,10 +894,10 @@ document.getElementById('galFilters').addEventListener('click',e=>{
 const statObserver=new IntersectionObserver(entries=>{
   entries.forEach(en=>{
     if(!en.isIntersecting)return;
-    const el=en.target,target=+el.dataset.count,dur=1400,t0=performance.now();
+    const el=en.target,target=+el.dataset.count,suffix=el.dataset.suffix||'',dur=1400,t0=performance.now();
     function tick(t){
       const p=Math.min((t-t0)/dur,1);
-      el.textContent=Math.floor(target*p).toLocaleString()+(p===1?'+':'');
+      el.textContent=Math.floor(target*p).toLocaleString()+(p===1?suffix:'');
       if(p<1)requestAnimationFrame(tick);
     }
     requestAnimationFrame(tick);
@@ -1075,7 +1075,7 @@ const I18N={
     hero_title:"Professionele Klank, Beligting & Vermaak",
     hero_sub:"Ons bring die klank, die ligte en die partytjie na troues, verjaarsdae, korporatiewe geleenthede en elke viering tussenin, orals in die Wes-Kaap.",
     hero_cta1:"<svg class=\"icon icon-fill\" viewBox=\"0 0 24 24\" aria-hidden=\"true\"><path d=\"M13 2 3 14h7l-1 8 10-12h-7z\"/></svg> Kry 'n Kits-kwotasie",hero_cta2:"Bespreek 'n Geleentheid",
-    stat_events:"Geleenthede Voltooi",stat_years:"Jaar Ondervinding",stat_guests:"Gaste Vermaak",stat_rating:"Gemiddelde Gradering",
+    stat_radius:"Diensarea",stat_packages:"Pasgemaakte Pakkette",stat_turnaround:"Kwotasie Omkeertyd",stat_deposit:"Deposito Bespreek Jou Datum",
     svc_tag:"Wat Ons Doen",svc_title:"Ons Dienste",
     svc_sub:"Alles wat jou geleentheid nodig het om goed te klink, van die eerste mikrofoontoets tot die laaste liedjie. Ons hanteer die opstel, die toerusting en die afbreek sodat jy die dag kan geniet.",
     hear_label:"Hoor die masjien"
